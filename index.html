@@ -138,27 +138,23 @@
 
       this.x = Math.random() * (width - this.ancho);
       this.y = position;
-
       position += (height / platformCount);
-    };
 
+    };
 
 
     for (var i = 0; i < platformCount; i++) {
       plataformas.push(new Platform());
     }
 
+    player.x = plataformas[plataformas.length - 1].x + 20;
+    player.y = plataformas[plataformas.length - 1].y - player.alto + 10;
+    window.alert("x: " + player.x + " y: " + player.y);
+
     var Base = function () {
       this.height = 5;
       this.width = width;
 
-      //Sprite clipping
-      this.cx = 0;
-      this.cy = 614;
-      this.cwidth = 100;
-      this.cheight = 5;
-
-      this.moved = 0;
 
       this.x = 0;
       this.y = height - this.height;
@@ -201,24 +197,6 @@
 
 
     window.onload = function () {
-
-      console.log("Pasamos por aqui");
-      player = {
-        x: anchoCanvas / 2 - 50,
-        y: altoCanvas - 150,
-        ancho: 50,
-        alto: 63,
-        jumping: true,
-        saltado: true,
-        x_vel: 0,
-        y_vel: 0,
-        get midX() {
-          return this.x + this.ancho * 0.5
-        },
-        get midY() {
-          return this.y + this.alto * 0.5
-        },
-      }
       getMobileOperatingSystem();
     };
 
@@ -251,6 +229,7 @@
     console.log("Tras sali del for hay: " + plataformas.length);
 
     function pintaPersonaje() {
+      //window.alert(player.x + " " + player.y);
       lienzo.clearRect(0, 0, bCanvas.width, bCanvas.height);
       lienzo.drawImage(jon, player.x, player.y);
     }
@@ -317,12 +296,6 @@
 
     loop = function () {
 
-      if (player.saltado == false && player.y_vel > 0) {
-
-        player.y_vel -= 30;
-        player.saltado = true;
-
-      }
       if (controller.left) {
         player.x_vel -= 0.5;
       }
@@ -334,7 +307,7 @@
         console.log("if");
         player.y += player.y_vel;
         player.y_vel += gravity;
-      }else {
+      } else {
         plataformas.forEach(function (p, i) {
           console.log(player.vy);
 
@@ -370,10 +343,17 @@
         player.x = -32;
       }
 
+      if (player.y > 580) {
+        console.log("OOOOOOOOOOOOOOOOOOOOOOO");
+        player.x = plataformas[plataformas.length - 1].x + 20;
+        player.y = plataformas[plataformas.length - 1].y - player.alto + 10;
+      }
 
+
+
+      console.log("Px: " + player.x + " Py: " + player.y);
 
       putasColisionesMeComenLosPutosCojones2()
-
       gestionPuntuacion();
       pintaPersonaje();
       pintaPlataformas();
