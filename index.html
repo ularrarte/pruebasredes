@@ -89,6 +89,7 @@
 
     var bCanvas = document.getElementById("lienzo");
     var lienzo = bCanvas.getContext("2d");
+    var android;
 
     var auxX = 50;
     var auxY = 450;
@@ -139,7 +140,11 @@
       }
 
       if (/android/i.test(userAgent)) {
-        window.alert("Esto es Andorid PUTA");
+        //window.alert("Esto es Andorid PUTA");
+        window.alert("1: " + andorid);
+        android = true;
+        window.alert("2: " + andorid);
+
         return "Android";
       }
 
