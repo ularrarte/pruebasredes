@@ -17,6 +17,7 @@
 
     }
 
+
    
     .android1 {
       -moz-box-shadow: 0px 1px 0px 0px #fff6af;
@@ -64,7 +65,7 @@
 
 <body style="background-color:33F0FF">
 
-  <div id="canvas-container">
+  <div id="canvas-container" class="pontunombre aquí">
     <div id="div1" style="position:absolute; top:0; left:00;">
       <canvas id="topCanvas" width="500" height="200" style="background-color:0;position:relative; top:80; left:0; z-index:-1">
       </canvas>
@@ -79,7 +80,6 @@
       </canvas>
     </div>
 
-    <button class="android1">Æ</button>
 
   </div>
   <button class="android1">Æ</button>
@@ -336,7 +336,7 @@
 
     loop = function () {
 
-      if (player.jumping == false) {
+      if (player.jumping == false && player.y_vel > 0 ) {
 
         player.y_vel -= 45;
         player.jumping = true;
