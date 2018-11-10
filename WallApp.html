@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style type="text/css">
+    #canvas-container {
+
+      position: absolute;
+      width: 800px;
+      height: 600px;
+      left: 55%;
+      top: 20%;
+      margin-left: -300px;
+      /* This is half the width */
+      margin-top: -200px;
+      /* This is half the height */
+
+    }
+  </style>
+</head>
+
+<body style="background-color:33F0FF">
+
+  <div id="canvas-container">
+    <div id="div1" style="position:absolute; top:0; left:00;">
+      <canvas id="topCanvas" width="500" height="200" style="background-color:0;position:relative; top:80; left:0; z-index:-1">
+      </canvas>
+    </div>
+    <div id="div2" style="position:absolute; top:0; left:0;">
+      <img id="cloud" src="https://purepng.com/public/uploads/large/11498493571qdikf8k49uogdl7steagkmhic6kvjidf2rf5ga0shxskr9xztcke16a9mdpkns3gloegtowd2ckyg0vk24x1w1pcofyzokcrx1v4.png"
+        width="700" height="200" style="position:relative; top:150; left:-100; z-index: 0"><img>
+    </div>
+
+    <div id="div3" style="position:absolute; top:200; left:0;">
+      <canvas id="lienzo" width="500" height="600" style="background-color:blue;position:relative; top:80; left:0;  z-index:-1;">
+      </canvas>
+    </div>
+
+  </div>
+
+  <script type="text/javascript">
+    var loop, controller;
+
+    var bCanvas = document.getElementById("lienzo");
+    var lienzo = bCanvas.getContext("2d");
+
+    var anchoCanvas = bCanvas.width;
+    var altoCanvas = bCanvas.height;
+
+    var player = {
+      x: anchoCanvas / 2 - 50,
+      y: altoCanvas - 150,
+      ancho: 50,
+      alto: 63,
+      jumping: true,
+      saltado: true,
+      x_vel: 0,
+      y_vel: 0,
+      get midX() {
+        return this.x + this.ancho * 0.5
+      },
+      get midY() {
+        return this.y + this.alto * 0.5
+      },
+    }
+
+
+
+
+
+    var plataformas = [];
+
+    plataformas.push({
+      x: anchoCanvas / 2 - 50,
+      y: altoCanvas - 30,
+      ancho: 100,
+      alto: 15,
+      midX: auxX + 100 * 0.5,
+      midY: auxY - 15 * 0.5,
+      get toString() {
+        return "X: " + this.x + " Y: " + this.y + " Ancho: " + this.ancho + " Alto: " + this.alto
+      },
+    });
+
+    var jon = new Image();
+    jon.src = 'Jon.png';
+
+
+
+    var bCanvas = document.getElementById("lienzo");
+    var lienzo = bCanvas.getContext("2d");
+
+    var auxX = 50;
+    var auxY = 450;
+
+    /*for (var a = 0; a < 6; a++){
+    		plataformas[a] = [];
+    			for(var b = 0; b < 5; b++) {
+            auxX += Math.floor(Math.random() * 20); 
+            auxY -= Math.floor(Math.random() * 20); 
+    				plataformas[a][b] = { x: auxX, y: auxY};
+            console.log("El segundo reich de palacios estaba en el: " + plataformas[a][b].x + " " + plataformas[a][b].y);  
+            console.log("Que coño le pasa a esto: " + plataformas[a].length + " lol: " + plataformas[a][b].length);
+    			}
+    	}*/
+
+
+
+
+    window.onload = function () {
+
+      console.log("Pasamos por aqui");
+      player = {
+        x: anchoCanvas / 2 - 50,
+        y: altoCanvas - 150,
+        ancho: 50,
+        alto: 63,
+        jumping: true,
+        saltado: true,
+        x_vel: 0,
+        y_vel: 0,
+        get midX() {
+          return this.x + this.ancho * 0.5
+        },
+        get midY() {
+          return this.y + this.alto * 0.5
+        },
+      }
+      getMobileOperatingSystem();
+    };
+
+
+    function getMobileOperatingSystem() {
+      var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+      // Windows Phone must come first because its UA also contains "Android"
+      if (/windows phone/i.test(userAgent)) {
+        return "Windows Phone";
+      }
+
+      if (/android/i.test(userAgent)) {
+        console.log("Esto es Andorid PUTA");
+        return "Android";
+      }
+
+      // iOS detection from: http://stackoverflow.com/a/9039885/177710
+      if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+        return "iOS";
+      }
+
+      return "unknown";
+    }
+
+
+    //Rellenamos el puto array de ladrillos, si es con leche mejor
+    for (var i = 0; i < 2; i++) {
+      auxX += Math.floor(Math.random() * 150);
+      auxY -= Math.floor(Math.random() * 150);
+      //console.log("CAFECONLOOOOOOOOOOOOOOOOU");
+      plataformas.push({
+        x: auxX,
+        y: auxY,
+        ancho: 100,
+        alto: 15,
+        midX: auxX + 100 * 0.5,
+        midY: auxY - 15 * 0.5,
+        get toString() {
+          return "X: " + this.x + " Y: " + this.y + " Ancho: " + this.ancho + " Alto: " + this.alto
+        },
+      });
+    }
+    console.log("Tras sali del for hay: " + plataformas.length);
+
+    function pintaPersonaje() {
+      lienzo.clearRect(0, 0, bCanvas.width, bCanvas.height);
+      lienzo.drawImage(jon, player.x, player.y);
+    }
+
+    function pintaPlataformas() {
+      for (var i = 0; i < plataformas.length; i++) {
+        //console.log("El primer reich de palacios estaba en el: " + plataformas[i].x + " " + plataformas[i].y);       
+        lienzo.fillRect(plataformas[i].x, plataformas[i].y, 100, 15);
+        lienzo.strokeRect(plataformas[i].x, plataformas[i].y, 100, 15);
+      }
+    }
+
+
+    function putasColisionesMeComenLosPutosCojones() {
+      //console.log("Este debug es pa liarme un canuto, asi hago un descanso y encima lo uso de debug");
+      for (var i = 0; i < plataformas.length; i++) {
+        var puta = plataformas[i];
+
+        var vectorX = puta.midX - player.midX;
+        var vectorY = puta.midY - player.midY;
+        //Si la x del jugador está entre las X que engloba el ladrillo
+
+        console.log("Zumo de piña: " + player.saltado);
+
+        if (player.y < (puta.y - puta.alto) && (player.y < puta.y - puta.alto - 10) && player.saltado) {
+          //console.log("PutaX: " + puta.x + " PlayerX: " + player.x);
+          if (puta.x < (player.x + player.ancho) && player.x < (puta.x + puta.ancho)) {
+            console.log("Puerto Indias 7UP " + player.saltado);
+            //Si ademas eres tan bueno que la Y coincide
+            if (puta.y > player.y && player.y > (puta.y - puta.alto) - 16 - 32) {
+              //gestionPlataformas();
+
+
+              player.saltado = false;
+              return true;
+            }
+          }
+        }
+      }
+      player.saltado = true;
+    }
+
+    function doblepenetration() {
+      for (var i = 0; i < plataformas.length; i++) {
+        var joder = plataformas[0];
+        var vectorX = joder.midX - player.midX;
+        var vectorY = joder.midY - player.midY;
+
+        if (vectorY * vectorY < vectorX * vectorX) {
+          console.log("KKK");
+        }
+        if (vectorY < 0) {
+          if (player.y < (joder.y + joder.alto) || (player.y + player.alto) > joder.y ||
+            player.x < (joder.x + joder.ancho || (player.x + player.ancho) < joder.x)) {
+            console.log("ISIS");
+          } else {
+            console.log("ETA");
+          }
+        }
+        //console.log("Vector que uno la distancia entre en jugador y la plataforma: (" + vectorX + "," + vectorY + ")" );
+      }
+    }
+
+
+    function gestionPlataformas() {
+      if (plataformas.length > 0) {
+        plataformas.shift();
+        var sifilis = plataformas[plataformas.length - 1];
+        var auxX = sifilis.x;
+        var auxY = sifilis.y;
+
+        console.log("El hulio con el pihama de rayas: X: " + auxX + " Y: " + auxY);
+
+        //Añadimos otra más      
+        plataformas.push({
+          x: auxX + 100,
+          y: auxY - 100,
+          ancho: 100,
+          alto: 15
+          //toString: "X: " + plataformas[i].x + " Y: " + plataformas[i].y + " Ancho: " + plataformas[i].ancho + " Alto: " + plataformas[i].alto
+        });
+      }
+    }
+
+    //Controlador de las movidas de teclado
+    controller = {
+
+      left: false,
+      right: false,
+      up: false,
+      keyListener: function (event) {
+
+        var key_state = (event.type == "keydown") ? true : false;
+
+        switch (event.keyCode) {
+
+          case 37: //Flecha izquierda
+            controller.left = key_state;
+            break;
+          case 38: //Flecha derecha
+            controller.up = key_state;
+            break;
+          case 39: //Flecha de salto.
+            controller.right = key_state;
+            break;
+
+        }
+
+      }
+    };
+
+    loop = function () {
+
+      if (player.jumping == false) {
+
+        player.y_vel -= 45;
+        player.jumping = true;
+
+      }
+
+      if (controller.left) {
+
+        player.x_vel -= 0.5;
+
+      }
+
+      if (controller.right) {
+
+        player.x_vel += 0.5;
+
+      }
+
+      player.y_vel += 1.5; //Gravedad
+      player.x += player.x_vel;
+      player.y += player.y_vel;
+      //Fricción
+      player.x_vel *= 0.9; //Eje X
+      player.y_vel *= 0.9; //Eje Y
+
+      //Si el personje se está cayendo por debajo del suelo...
+      /*if (player.y > 520 - 16 - 32) {
+
+        player.jumping = false;
+        player.y = 520 - 16 - 32;
+        player.y_velocity = 0;
+
+      } else {
+        hayColision = putasColisionesMeComenLosPutosCojones();
+        if (hayColision) {
+          player.jumping = false;
+          player.y_velocity = 0;
+        }
+      }*/
+      hayColision = putasColisionesMeComenLosPutosCojones();
+      if (hayColision) {
+        player.saltado = true;
+        player.jumping = false;
+        player.y_velocity = 0;
+      }
+
+      //Si se sale por la parte izquierda del canvas...
+      if (player.x < -32) {
+
+        player.x = 520;
+
+      } else if (player.x > 520) {
+        //Si se sale por laparte derecha...
+
+        player.x = -32;
+
+      }
+
+
+      //Si ha muerto
+      if (player.y > 700) {
+        player.x = anchoCanvas / 2 - 50;
+        player.y = altoCanvas - 150;
+      }
+
+      //Esto está perfecto:
+      //console.log("El punto medio del jugador: X: " + player.midX + " Y: " + player.midY);
+
+
+      /*console.log("X de la platafroma: " + plataformas[0].x  + " Y: " + plataformas[0].y);
+      console.log("El punto medio de las plataformas: X: " + plataformas[0].midX + " Y: " + plataformas[0].midY);
+*/
+      //doblepenetration();
+      putasColisionesMeComenLosPutosCojones();
+      pintaPersonaje();
+      pintaPlataformas();
+      window.requestAnimationFrame(loop);
+    }
+
+
+    pintaPlataformas();
+    window.addEventListener("keydown", controller.keyListener)
+    window.addEventListener("keyup", controller.keyListener);
+    window.requestAnimationFrame(loop);
+  </script>
+</body>
+
+</html>
