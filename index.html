@@ -18,7 +18,7 @@
     }
 
 
-   
+
     .android1 {
       -moz-box-shadow: 0px 1px 0px 0px #fff6af;
       -webkit-box-shadow: 0px 1px 0px 0px #fff6af;
@@ -77,7 +77,10 @@
 
     <div id="div3" style="position:absolute; top:200; left:0;">
       <canvas id="lienzo" width="500" height="600" style="background-color:blue;position:relative; top:80; left:0;  z-index:-1;">
+
+
       </canvas>
+      <p id="scoreText"></p>
     </div>
 
 
@@ -85,8 +88,12 @@
   <button class="android1">Æ</button>
   <button class="android1">Æ2</button>
 
+
   <script type="text/javascript">
     var loop, controller;
+
+    var width = 500;
+    var height = 600;
 
     var bCanvas = document.getElementById("lienzo");
     var lienzo = bCanvas.getContext("2d");
@@ -115,13 +122,14 @@
 
 
 
+
     var plataformas = [];
 
     plataformas.push({
-      x: anchoCanvas / 2 - 50,
-      y: altoCanvas - 30,
       ancho: 100,
       alto: 15,
+      x: anchoCanvas / 2 - 50,
+      y: altoCanvas - 30,      
       midX: auxX + 100 * 0.5,
       midY: auxY - 15 * 0.5,
       get toString() {
@@ -140,6 +148,8 @@
 
     var auxX = 50;
     var auxY = 450;
+
+    var score = 0;
 
     /*for (var a = 0; a < 6; a++){
     		plataformas[a] = [];
@@ -202,9 +212,9 @@
       return "unknown";
     }
 
-
+    /*
     //Rellenamos el puto array de ladrillos, si es con leche mejor
-    for (var i = 0; i < 2; i++) {
+    for (var i = 0; i < 1; i++) {
       auxX += Math.floor(Math.random() * 150);
       auxY -= Math.floor(Math.random() * 150);
       //console.log("CAFECONLOOOOOOOOOOOOOOOOU");
@@ -219,7 +229,7 @@
           return "X: " + this.x + " Y: " + this.y + " Ancho: " + this.ancho + " Alto: " + this.alto
         },
       });
-    }
+    }*/
     console.log("Tras sali del for hay: " + plataformas.length);
 
     function pintaPersonaje() {
@@ -245,18 +255,16 @@
         var vectorY = puta.midY - player.midY;
         //Si la x del jugador está entre las X que engloba el ladrillo
 
-        console.log("Zumo de piña: " + player.saltado);
+        //console.log("Zumo de piña: " + player.saltado);
 
         if (player.y < (puta.y - puta.alto) && (player.y < puta.y - puta.alto - 10) && player.saltado) {
           //console.log("PutaX: " + puta.x + " PlayerX: " + player.x);
           if (puta.x < (player.x + player.ancho) && player.x < (puta.x + puta.ancho)) {
-            console.log("Puerto Indias 7UP " + player.saltado);
+            //console.log("Puerto Indias 7UP " + player.saltado);
             //Si ademas eres tan bueno que la Y coincide
             if (puta.y > player.y && player.y > (puta.y - puta.alto) - 16 - 32) {
-              //gestionPlataformas();
-
-
               player.saltado = false;
+              gestionPlataformas();
               return true;
             }
           }
@@ -289,22 +297,33 @@
 
     function gestionPlataformas() {
       if (plataformas.length > 0) {
-        plataformas.shift();
+        //plataformas.shift();
         var sifilis = plataformas[plataformas.length - 1];
-        var auxX = sifilis.x;
-        var auxY = sifilis.y;
 
-        console.log("El hulio con el pihama de rayas: X: " + auxX + " Y: " + auxY);
+        var auxX = sifilis.x;
+        var auxY = sifilis.y - (Math.floor(Math.random() * (110 - 85 + 1)) + 85);
 
         //Añadimos otra más      
         plataformas.push({
-          x: auxX + 100,
-          y: auxY - 100,
+          x: auxX,
+          y: auxY,
           ancho: 100,
           alto: 15
           //toString: "X: " + plataformas[i].x + " Y: " + plataformas[i].y + " Ancho: " + plataformas[i].ancho + " Alto: " + plataformas[i].alto
         });
+
+        //plataformas.shift();
       }
+    }
+
+    function movimientoCamara() {
+
+    }
+
+    function gestionPuntuacion() {
+      score = ((player.y - 600) * -1) / 100;
+      document.getElementById("scoreText").innerHTML = Math.round(score);
+      lienzo.fillText(Math.round(score), 100, 100);
     }
 
     //Controlador de las movidas de teclado
@@ -336,7 +355,7 @@
 
     loop = function () {
 
-      if (player.jumping == false && player.y_vel > 0 ) {
+      if (player.jumping == false && player.y_vel > 0) {
 
         player.y_vel -= 45;
         player.jumping = true;
@@ -352,6 +371,31 @@
       if (controller.right) {
 
         player.x_vel += 0.5;
+
+      }
+
+      if (player.y >= (height / 2) - (player.alto / 2)) {
+        console.log("Si se esconde para mear, vale para follar");
+      } else {
+        for (var i = 0; i < plataformas.length; i++) {
+          if (player.y_vel < 0) {
+            plataformas[i].y -= player.y_vel;
+          }
+          if (plataformas[i].y > height) {
+            var plataformAux = {
+              ancho: 100,
+              alto: 15,
+              x: Math.random() * (width - this.ancho),
+              y: plataformas[i].y - height,
+              midX: auxX + 100 * 0.5,
+              midY: auxY - 15 * 0.5,
+              get toString() {
+                return "X: " + this.x + " Y: " + this.y + " Ancho: " + this.ancho + " Alto: " + this.alto
+              },
+            }
+            plataformas[i] = plataformAux;
+          }
+        }
 
       }
 
@@ -410,7 +454,10 @@
       console.log("El punto medio de las plataformas: X: " + plataformas[0].midX + " Y: " + plataformas[0].midY);
 */
       //doblepenetration();
+      console.log(player.y);
       putasColisionesMeComenLosPutosCojones();
+      movimientoCamara();
+      gestionPuntuacion();
       pintaPersonaje();
       pintaPlataformas();
       window.requestAnimationFrame(loop);
