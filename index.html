@@ -114,6 +114,8 @@
 
     var gravity = 0.2;
 
+    var score = 0;
+
     var player = {
       x: anchoCanvas / 2 - 50,
       y: altoCanvas - 150,
@@ -197,7 +199,6 @@
     var auxX = 50;
     var auxY = 450;
 
-    var score = 0;
 
     /*for (var a = 0; a < 6; a++){
     		plataformas[a] = [];
@@ -281,7 +282,6 @@
 
 
     function gestionPuntuacion() {
-      score = ((player.y - 600) * -1) / 100;
       document.getElementById("scoreText").innerHTML = Math.round(score);
       lienzo.fillText(Math.round(score), 100, 100);
     }
@@ -374,6 +374,8 @@
         player.x = plataformas[plataformas.length - 1].x + 20;
         player.y = plataformas[plataformas.length - 1].y - player.alto + 10;
       }
+
+      score++;
 
 
 
