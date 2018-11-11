@@ -110,7 +110,7 @@
     var anchoCanvas = bCanvas.width;
     var altoCanvas = bCanvas.height;
 
-    var platformCount = 10;
+    var platformCount = 8;
 
     var gravity = 0.2;
 
@@ -123,6 +123,8 @@
       saltado: true,
       x_vel: 0,
       y_vel: 0,
+
+      spriteState: 0, //0 Normal, 1 Izquierda, 2 Derecha
 
       get midX() {
         return this.x + this.ancho * 0.5
@@ -179,6 +181,12 @@
 
     var jon = new Image();
     jon.src = 'Jon2.png';
+
+    var jonLeft = new Image();
+    jonLeft.src = 'JonI.png';
+
+    var jonRight = new Image();
+    jonRight.src = 'JonD.png';
 
 
 
@@ -241,7 +249,9 @@
       //window.alert(player.x + " " + player.y);
       lienzo.clearRect(0, 0, bCanvas.width, bCanvas.height);
       lienzo.drawImage(background,0,0);
-      lienzo.drawImage(jon, player.x, player.y);
+      if (player.spriteState == 0) lienzo.drawImage(jon, player.x, player.y);
+      if (player.spriteState == 1) lienzo.drawImage(jonLeft, player.x, player.y);
+      if (player.spriteState == 2) lienzo.drawImage(jonRight, player.x, player.y);
     }
 
     function pintaPlataformas() {
@@ -261,7 +271,7 @@
         if (player.y_vel > 0 && (player.x + 15 < puta.x + puta.ancho) && (player.x + player.ancho -
             15 > puta.x) &&
           (player.y + player.alto > puta.y) && (player.y + player.alto < puta.y + puta.alto)) {
-          player.y_vel = -8;
+          player.y_vel = -10;
           //console.log("AHHHHHHHHHHHHHHHHHHH");
         }
 
@@ -308,11 +318,16 @@
     loop = function () {
 
       if (controller.left) {
+        player.spriteState = 1;
         player.x_vel -= 0.5;
+      }else{
+        player.spriteState = 0;
       }
       if (controller.right) {
+        player.spriteState = 2;
         player.x_vel += 0.5;
       }
+      //player.spriteState = 0;
       //Movement of player affected by gravity
       if (player.y >= (height / 2) - (player.alto / 2)) {
         console.log("if");
