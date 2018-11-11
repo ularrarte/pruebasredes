@@ -17,7 +17,10 @@
 
     }
 
-
+    .bgimg {
+      background-image: url('wall.png');
+      z-index: 0;
+    }
 
     .android1 {
       -moz-box-shadow: 0px 1px 0px 0px #fff6af;
@@ -75,7 +78,7 @@
         width="700" height="200" style="position:relative; top:150; left:-100; z-index: 0"><img>
     </div>
 
-    <div id="div3" style="position:absolute; top:200; left:0;">
+    <div id="div3" class="bgimg" style="position:absolute; top:200; left:0;">
       <canvas id="lienzo" width="500" height="600" style="background-color:blue;position:relative; top:80; left:0;  z-index:-1;">
 
 
@@ -97,6 +100,12 @@
 
     var bCanvas = document.getElementById("lienzo");
     var lienzo = bCanvas.getContext("2d");
+
+    var background = new Image();
+    background.src = "wall.png";
+
+    var plataformasImg = new Image();
+    plataformasImg.src = "plataforma.png"
 
     var anchoCanvas = bCanvas.width;
     var altoCanvas = bCanvas.height;
@@ -134,7 +143,7 @@
 
     function Platform() {
       this.ancho = 100;
-      this.alto = 15;
+      this.alto = 30;
 
       this.x = Math.random() * (width - this.ancho);
       this.y = position;
@@ -231,6 +240,7 @@
     function pintaPersonaje() {
       //window.alert(player.x + " " + player.y);
       lienzo.clearRect(0, 0, bCanvas.width, bCanvas.height);
+      lienzo.drawImage(background,0,0);
       lienzo.drawImage(jon, player.x, player.y);
     }
 
@@ -239,8 +249,9 @@
       for (var i = 0; i < platformCount; i++) {
 
         //console.log("El primer reich de palacios estaba en el: " + plataformas[i].x + " " + plataformas[i].y);
-        lienzo.fillRect(plataformas[i].x, plataformas[i].y, 100, 15);
-        lienzo.strokeRect(plataformas[i].x, plataformas[i].y, 100, 15);
+        //lienzo.fillRect(plataformas[i].x, plataformas[i].y, 100, 15);
+        //lienzo.strokeRect(plataformas[i].x, plataformas[i].y, 100, 15);
+        lienzo.drawImage(plataformasImg,plataformas[i].x, plataformas[i].y);
       }
     }
 
