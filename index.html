@@ -321,15 +321,18 @@
 
     loop = function () {
 
-      if (controller.left || androidDerecha) {
+      if (controller.left || androidIzquierda) {
         player.spriteState = 1;
         player.x_vel -= 0.5;
       } else {
         player.spriteState = 0;
+        androidIzquierda = false;
       }
-      if (controller.right || androidIzquierda) {
+      if (controller.right || androidDerecha) {
         player.spriteState = 2;
         player.x_vel += 0.5;
+      }else{
+        androidDerecha = false;
       }
       //player.spriteState = 0;
       //Movement of player affected by gravity
@@ -394,21 +397,22 @@
 
 
     function orientation(event) {
-     var string = "Magnetometer: " +
+      var string = "Magnetometer: " +
         event.alpha + ", " +
         event.beta + ", " +
-        event.gamma; 
+        event.gamma;
+      if (event.gamma > 18) androidDerecha = true;;
+      if (event.gamma < -18) androidIzquierda = true;;
       document.getElementById("debug").innerHTML = string;
-      lienzo.fillText(Math.round(string), 100, 100);      
-      if (event.gamma > 18) window.alert("Derecha");
-      if (event.gamma < -18) window.alert("Izquierda");
+      lienzo.fillText(Math.round(string), 100, 100);
+
     }
 
     function motion(event) {
       console.log("Accelerometer: " +
         event.accelerationIncludingGravity.x + ", " +
         event.accelerationIncludingGravity.y + ", " +
-        event.accelerationIncludingGravity.z       
+        event.accelerationIncludingGravity.z
       );
     }
 
