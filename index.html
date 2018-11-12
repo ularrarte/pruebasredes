@@ -403,7 +403,7 @@
         event.gamma;
       if (event.gamma > 18) androidDerecha = true;;
       if (event.gamma < -18) androidIzquierda = true;;
-      document.getElementById("debug").innerHTML = string;
+      document.getElementById("debug").innerHTML = string + " Izq: " + androidIzquierda + " Dcha: " + androidDerecha;
       lienzo.fillText(Math.round(string), 100, 100);
 
     }
