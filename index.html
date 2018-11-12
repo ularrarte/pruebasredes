@@ -244,7 +244,7 @@
     }
 
 
-    console.log("Tras sali del for hay: " + plataformas.length);
+    //console.log("Tras sali del for hay: " + plataformas.length);
 
     function pintaPersonaje() {
       //window.alert(player.x + " " + player.y);
@@ -330,12 +330,12 @@
       //player.spriteState = 0;
       //Movement of player affected by gravity
       if (player.y >= (height / 2) - (player.alto / 2)) {
-        console.log("if");
+        //console.log("if");
         player.y += player.y_vel;
         player.y_vel += gravity;
       } else {
         plataformas.forEach(function (p, i) {
-          console.log(player.vy);
+          //console.log(player.vy);
 
           if (player.y_vel < 0) {
             p.y -= player.y_vel;
@@ -370,7 +370,7 @@
       }
 
       if (player.y > 580) {
-        console.log("OOOOOOOOOOOOOOOOOOOOOOO");
+        //console.log("OOOOOOOOOOOOOOOOOOOOOOO");
         player.x = plataformas[plataformas.length - 1].x + 20;
         player.y = plataformas[plataformas.length - 1].y - player.alto + 10;
       }
@@ -379,7 +379,7 @@
 
 
 
-      console.log("Px: " + player.x + " Py: " + player.y);
+      //console.log("Px: " + player.x + " Py: " + player.y);
 
       putasColisionesMeComenLosPutosCojones2()
       gestionPuntuacion();
@@ -390,7 +390,7 @@
 
 
     function orientation(event) {
-      window.log("Magnetometer: " +
+      window.alert("Magnetometer: " +
         event.alpha + ", " +
         event.beta + ", " +
         event.gamma
