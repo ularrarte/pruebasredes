@@ -114,6 +114,9 @@
 
     var gravity = 0.2;
 
+    var androidDerecha = false;
+    var androidIzquierda = false;
+
     var score = 0;
 
     var player = {
@@ -317,13 +320,13 @@
 
     loop = function () {
 
-      if (controller.left) {
+      if (controller.left || androidDerecha) {
         player.spriteState = 1;
         player.x_vel -= 0.5;
       } else {
         player.spriteState = 0;
       }
-      if (controller.right) {
+      if (controller.right || androidIzquierda) {
         player.spriteState = 2;
         player.x_vel += 0.5;
       }
@@ -390,18 +393,20 @@
 
 
     function orientation(event) {
-      window.alert("Magnetometer: " +
+      console.log("Magnetometer: " +
         event.alpha + ", " +
         event.beta + ", " +
         event.gamma
       );
+      if (event.gamma > 10) window.alert("Derecha");
+      if (event.gamma < 10) window.alert("Izquierda");
     }
 
     function motion(event) {
       console.log("Accelerometer: " +
         event.accelerationIncludingGravity.x + ", " +
         event.accelerationIncludingGravity.y + ", " +
-        event.accelerationIncludingGravity.z
+        event.accelerationIncludingGravity.z       
       );
     }
 
