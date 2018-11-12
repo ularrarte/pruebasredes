@@ -401,8 +401,8 @@
         event.alpha + ", " +
         event.beta + ", " +
         event.gamma;
-      if (event.gamma > 18){ androidDerecha = true;} else { androidDerecha = false;}
-      if (event.gamma < -18){ androidIzquierda = true;} else { androidIzquierda = false;}
+      if (event.gamma > 12){ androidDerecha = true;} else { androidDerecha = false;}
+      if (event.gamma < -12){ androidIzquierda = true;} else { androidIzquierda = false;}
       document.getElementById("debug").innerHTML = string + " <br/> Izq: " + androidIzquierda + " Dcha: " + androidDerecha;
       lienzo.fillText(Math.round(string), 100, 100);
 
