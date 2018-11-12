@@ -84,6 +84,7 @@
 
       </canvas>
       <p id="scoreText"></p>
+      <p id="debug"></p>
     </div>
 
 
@@ -393,13 +394,14 @@
 
 
     function orientation(event) {
-      console.log("Magnetometer: " +
+     var string = "Magnetometer: " +
         event.alpha + ", " +
         event.beta + ", " +
-        event.gamma
-      );
-      if (event.gamma > 10) window.alert("Derecha");
-      if (event.gamma < -10) window.alert("Izquierda");
+        event.gamma; 
+      document.getElementById("debug").innerHTML = string;
+      lienzo.fillText(Math.round(string), 100, 100);      
+      //if (event.gamma > 10) window.alert("Derecha");
+      //if (event.gamma < -10) window.alert("Izquierda");
     }
 
     function motion(event) {
