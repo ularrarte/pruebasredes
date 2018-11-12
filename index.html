@@ -249,7 +249,7 @@
     function pintaPersonaje() {
       //window.alert(player.x + " " + player.y);
       lienzo.clearRect(0, 0, bCanvas.width, bCanvas.height);
-      lienzo.drawImage(background,0,0);
+      lienzo.drawImage(background, 0, 0);
       if (player.spriteState == 0) lienzo.drawImage(jon, player.x, player.y);
       if (player.spriteState == 1) lienzo.drawImage(jonLeft, player.x, player.y);
       if (player.spriteState == 2) lienzo.drawImage(jonRight, player.x, player.y);
@@ -262,7 +262,7 @@
         //console.log("El primer reich de palacios estaba en el: " + plataformas[i].x + " " + plataformas[i].y);
         //lienzo.fillRect(plataformas[i].x, plataformas[i].y, 100, 15);
         //lienzo.strokeRect(plataformas[i].x, plataformas[i].y, 100, 15);
-        lienzo.drawImage(plataformasImg,plataformas[i].x, plataformas[i].y);
+        lienzo.drawImage(plataformasImg, plataformas[i].x, plataformas[i].y);
       }
     }
 
@@ -320,7 +320,7 @@
       if (controller.left) {
         player.spriteState = 1;
         player.x_vel -= 0.5;
-      }else{
+      } else {
         player.spriteState = 0;
       }
       if (controller.right) {
@@ -389,8 +389,33 @@
     }
 
 
+    function orientation(event) {
+      window.log("Magnetometer: " +
+        event.alpha + ", " +
+        event.beta + ", " +
+        event.gamma
+      );
+    }
+
+    function motion(event) {
+      console.log("Accelerometer: " +
+        event.accelerationIncludingGravity.x + ", " +
+        event.accelerationIncludingGravity.y + ", " +
+        event.accelerationIncludingGravity.z
+      );
+    }
 
 
+    if (window.DeviceMotionEvent) {
+      window.addEventListener("devicemotion", motion, false);
+    } else {
+      console.log("DeviceMotionEvent is not supported");
+    }
+    if (window.DeviceOrientationEvent) {
+      window.addEventListener("deviceorientation", orientation, false);
+    } else {
+      console.log("DeviceOrientationEvent is not supported");
+    }
     window.addEventListener("keydown", controller.keyListener)
     window.addEventListener("keyup", controller.keyListener);
     window.requestAnimationFrame(loop);
