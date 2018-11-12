@@ -407,21 +407,7 @@
       lienzo.fillText(Math.round(string), 100, 100);
 
     }
-
-    function motion(event) {
-      console.log("Accelerometer: " +
-        event.accelerationIncludingGravity.x + ", " +
-        event.accelerationIncludingGravity.y + ", " +
-        event.accelerationIncludingGravity.z
-      );
-    }
-
-
-    if (window.DeviceMotionEvent) {
-      window.addEventListener("devicemotion", motion, false);
-    } else {
-      console.log("DeviceMotionEvent is not supported");
-    }
+    
     if (window.DeviceOrientationEvent) {
       window.addEventListener("deviceorientation", orientation, false);
     } else {
