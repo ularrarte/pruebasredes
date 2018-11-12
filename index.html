@@ -400,8 +400,8 @@
         event.gamma; 
       document.getElementById("debug").innerHTML = string;
       lienzo.fillText(Math.round(string), 100, 100);      
-      //if (event.gamma > 10) window.alert("Derecha");
-      //if (event.gamma < -10) window.alert("Izquierda");
+      if (event.gamma > 18) window.alert("Derecha");
+      if (event.gamma < -18) window.alert("Izquierda");
     }
 
     function motion(event) {
