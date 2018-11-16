@@ -108,6 +108,11 @@
     var plataformasImg = new Image();
     plataformasImg.src = "plataforma.png"
 
+    var dragonSprite = new Image();
+    dragonSprite.src = "pu1.png";
+  
+
+
     var anchoCanvas = bCanvas.width;
     var altoCanvas = bCanvas.height;
 
@@ -129,6 +134,7 @@
       saltado: true,
       x_vel: 0,
       y_vel: 0,
+
 
       spriteState: 0, //0 Normal, 1 Izquierda, 2 Derecha
 
@@ -160,13 +166,15 @@
     };
 
 
+    var dragon;
+
     for (var i = 0; i < platformCount; i++) {
       plataformas.push(new Platform());
     }
 
+
     player.x = plataformas[plataformas.length - 1].x + 20;
     player.y = plataformas[plataformas.length - 1].y - player.alto + 10;
-    window.alert("x: " + player.x + " y: " + player.y);
 
     var Base = function () {
       this.height = 5;
@@ -175,15 +183,11 @@
 
       this.x = 0;
       this.y = height - this.height;
-
-      this.draw = function () {
-        try {
-          ctx.drawImage(image, this.cx, this.cy, this.cwidth, this.cheight, this.x, this.y, this.width, this.height);
-        } catch (e) {}
-      };
     };
 
     var base = new Base();
+
+    var Agujero = function () {}
 
     var jon = new Image();
     jon.src = 'Jon2.png';
@@ -193,6 +197,9 @@
 
     var jonRight = new Image();
     jonRight.src = 'JonD.png';
+
+    var jonDragon = new Image();
+    jonDragon.src = "drogon.png";
 
 
 
@@ -251,12 +258,14 @@
     //console.log("Tras sali del for hay: " + plataformas.length);
 
     function pintaPersonaje() {
-      //window.alert(player.x + " " + player.y);
-      lienzo.clearRect(0, 0, bCanvas.width, bCanvas.height);
-      lienzo.drawImage(background, 0, 0);
+      //window.alert(player.x + " " + player.y);      
+      lienzo.drawImage(background, 0, 0);      
       if (player.spriteState == 0) lienzo.drawImage(jon, player.x, player.y);
       if (player.spriteState == 1) lienzo.drawImage(jonLeft, player.x, player.y);
       if (player.spriteState == 2) lienzo.drawImage(jonRight, player.x, player.y);
+      if (player.spriteState == 3) lienzo.drawImage(jonDragon, player.x, player.y);
+
+      if (dragon.render) lienzo.drawImage(dragonSprite, dragon.x, dragon.y);
     }
 
     function pintaPlataformas() {
@@ -281,9 +290,43 @@
         }
 
         player.saltado = true;
+
+        //Colisiones con los power ups
+
+        if (player.y_vel > 0 && dragon.x > player.x && (dragon.x + dragon.ancho) < (player.x + player.ancho) && (dragon
+            .y + dragon.alto > player.y) && (dragon.y + dragon.alto < player.y + player.alto)) {
+          player.y_vel = -20;
+          gravity = 0;
+
+          //Intervalo para el PU
+
+          if (dragon.type == 1) {
+            function intervalTrigger() {
+              return window.setInterval(function () {
+                player.spriteState = 3;
+                gravity = 0.2;
+                window.clearInterval(id);
+              }, 800);
+            };
+            var id = intervalTrigger();
+            //window.clearInterval(id);
+          }
+        }
       }
     }
 
+
+    function gestionPowerUp() {
+      dragon = {
+        ancho: 5,
+        alto: 5,
+        render: true,
+        type: 1,
+
+        x: plataformas[2].x + plataformas[2].ancho / 2,
+        y: plataformas[2].y - plataformas[2].alto / 2,
+      }
+    }
 
     function gestionPuntuacion() {
       document.getElementById("scoreText").innerHTML = Math.round(score);
@@ -331,13 +374,12 @@
       if (controller.right || androidDerecha) {
         player.spriteState = 2;
         player.x_vel += 0.5;
-      }else{
+      } else {
         androidDerecha = false;
       }
       //player.spriteState = 0;
-      //Movement of player affected by gravity
+      //Gestión del movimiento del personaje:
       if (player.y >= (height / 2) - (player.alto / 2)) {
-        //console.log("if");
         player.y += player.y_vel;
         player.y_vel += gravity;
       } else {
@@ -364,6 +406,8 @@
         }
       }
 
+
+
       player.x += player.x_vel;
 
       player.x_vel *= 0.9; //Eje X
@@ -386,8 +430,9 @@
 
 
 
-      //console.log("Px: " + player.x + " Py: " + player.y);
+      lienzo.clearRect(0, 0, bCanvas.width, bCanvas.height);
 
+      gestionPowerUp();
       putasColisionesMeComenLosPutosCojones2()
       gestionPuntuacion();
       pintaPersonaje();
@@ -401,13 +446,22 @@
         event.alpha + ", " +
         event.beta + ", " +
         event.gamma;
-      if (event.gamma > 12){ androidDerecha = true;} else { androidDerecha = false;}
-      if (event.gamma < -12){ androidIzquierda = true;} else { androidIzquierda = false;}
-      document.getElementById("debug").innerHTML = string + " <br/> Izq: " + androidIzquierda + " Dcha: " + androidDerecha;
+      if (event.gamma > 8) {
+        androidDerecha = true;
+      } else {
+        androidDerecha = false;
+      }
+      if (event.gamma < -8) {
+        androidIzquierda = true;
+      } else {
+        androidIzquierda = false;
+      }
+      document.getElementById("debug").innerHTML = string + " <br/> Isq: " + androidIzquierda + " Dcha: " +
+        androidDerecha;
       lienzo.fillText(Math.round(string), 100, 100);
 
     }
-    
+
     if (window.DeviceOrientationEvent) {
       window.addEventListener("deviceorientation", orientation, false);
     } else {
