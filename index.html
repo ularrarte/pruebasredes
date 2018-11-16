@@ -110,6 +110,11 @@
 
     var dragonSprite = new Image();
     dragonSprite.src = "pu1.png";
+
+    var pu2 = new Image();
+    pu2.src = "pu2.png";
+
+    var specialSprites = false;
   
 
 
@@ -303,6 +308,10 @@
           if (dragon.type == 1) {
             function intervalTrigger() {
               return window.setInterval(function () {
+                specialSprites = true;
+                //player.spriteState = 3;
+                gestionPersonaje(true);
+                window.alert("cobadonga");
                 player.spriteState = 3;
                 gravity = 0.2;
                 window.clearInterval(id);
@@ -325,6 +334,17 @@
 
         x: plataformas[2].x + plataformas[2].ancho / 2,
         y: plataformas[2].y - plataformas[2].alto / 2,
+      }
+    }
+
+    function gestionPersonaje(aux){
+      if(!aux){
+          //if(androidIzquierda)  player.spriteState = 1;
+          //if(androidDerecha)  player.spriteState = 2;
+          //player.spriteState = 0;
+      }else{
+       // player.spriteState = 3;
+        console.log("jaja");
       }
     }
 
@@ -365,14 +385,16 @@
     loop = function () {
 
       if (controller.left || androidIzquierda) {
-        player.spriteState = 1;
+        gestionPersonaje(false);
+        //player.spriteState = 1;
         player.x_vel -= 0.5;
       } else {
-        player.spriteState = 0;
+        //player.spriteState = 0;
         androidIzquierda = false;
       }
       if (controller.right || androidDerecha) {
-        player.spriteState = 2;
+        gestionPersonaje(false);
+        //player.spriteState = 2;
         player.x_vel += 0.5;
       } else {
         androidDerecha = false;
