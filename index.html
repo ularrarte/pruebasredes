@@ -310,9 +310,9 @@
           if (dragon.type == 1) {
             function intervalTrigger() {
               return window.setInterval(function () {
-                specialSprites = false;
                 player.spriteState = 0;
                 gravity = 0.2;
+                specialSprites = false;
                 window.clearInterval(id);
               }, 1500);
             };
@@ -385,10 +385,10 @@
     loop = function () {
 
       //Gestión de la velocidad y de los sprites:
-      if (controller.left || androidIzquierda) {
+      if (controller.left || androidIzquierda && !specialSprites) {
         player.spriteState = 1;
         player.x_vel -= 0.5;
-      } else if (controller.right || androidDerecha) {
+      } else if (controller.right || androidDerecha && !specialSprites) {
         player.spriteState = 2;
         player.x_vel += 0.5;
       } else if(!specialSprites) {
