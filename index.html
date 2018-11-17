@@ -171,7 +171,7 @@
     };
 
 
-    var dragon;
+    var powerup;
 
     for (var i = 0; i < platformCount; i++) {
       plataformas.push(new Platform());
@@ -270,7 +270,7 @@
       if (player.spriteState == 2) lienzo.drawImage(jonRight, player.x, player.y);
       if (player.spriteState == 3) lienzo.drawImage(jonDragon, player.x, player.y);
 
-      if (dragon.render) lienzo.drawImage(dragonSprite, dragon.x, dragon.y);
+      if (powerup.render) lienzo.drawImage(dragonSprite, powerup.x, powerup.y);
     }
 
     function pintaPlataformas() {
@@ -298,8 +298,8 @@
 
         //Colisiones con los power ups
 
-        if (player.y_vel > 0 && dragon.x > player.x && (dragon.x + dragon.ancho) < (player.x + player.ancho) && (dragon
-            .y + dragon.alto > player.y) && (dragon.y + dragon.alto < player.y + player.alto)) {
+        if (player.y_vel > 0 && powerup.x > player.x && (powerup.x + powerup.ancho) < (player.x + player.ancho) && (powerup
+            .y + powerup.alto > player.y) && (powerup.y + powerup.alto < player.y + player.alto)) {
           player.y_vel = -20;
           gravity = 0.1;
           player.spriteState = 3;
@@ -307,7 +307,7 @@
 
           //Intervalo para el PU
 
-          if (dragon.type == 1) {
+          if (powerup.type == 1) {
             function intervalTrigger() {
               return window.setInterval(function () {
                 gravity = 0.2;
@@ -334,7 +334,7 @@
 
 
     function gestionPowerUp() {
-      dragon = {
+      powerup = {
         ancho: 5,
         alto: 5,
         render: true,
