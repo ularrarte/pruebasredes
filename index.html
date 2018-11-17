@@ -115,7 +115,7 @@
     pu2.src = "pu2.png";
 
     var specialSprites = false;
-  
+
 
 
     var anchoCanvas = bCanvas.width;
@@ -264,7 +264,7 @@
 
     function pintaPersonaje() {
       //window.alert(player.x + " " + player.y);      
-      lienzo.drawImage(background, 0, 0);      
+      lienzo.drawImage(background, 0, 0);
       if (player.spriteState == 0) lienzo.drawImage(jon, player.x, player.y);
       if (player.spriteState == 1) lienzo.drawImage(jonLeft, player.x, player.y);
       if (player.spriteState == 2) lienzo.drawImage(jonRight, player.x, player.y);
@@ -301,7 +301,7 @@
         if (player.y_vel > 0 && dragon.x > player.x && (dragon.x + dragon.ancho) < (player.x + player.ancho) && (dragon
             .y + dragon.alto > player.y) && (dragon.y + dragon.alto < player.y + player.alto)) {
           player.y_vel = -20;
-          gravity = 0;
+          gravity = 0.1;
           player.spriteState = 3;
           specialSprites = true;
 
@@ -310,13 +310,21 @@
           if (dragon.type == 1) {
             function intervalTrigger() {
               return window.setInterval(function () {
-                player.spriteState = 0;
                 gravity = 0.2;
-                specialSprites = false;
+                //specialSprites = false;
                 window.clearInterval(id);
+              }, 800);
+            };
+
+            function spriteChanger() {
+              return window.setInterval(function () {
+                player.spriteState = 0;
+                specialSprites = false;
+                window.clearInterval(id2);
               }, 1500);
             };
             var id = intervalTrigger();
+            var id2 = spriteChanger();
             //player.spriteState = 0;
             //window.clearInterval(id);
           }
@@ -337,13 +345,13 @@
       }
     }
 
-    function gestionPersonaje(aux){
-      if(!aux){
-          if(androidIzquierda)  player.spriteState = 1;
-          if(androidDerecha)  player.spriteState = 2;
-          player.spriteState = 0;
-      }else{
-       // player.spriteState = 3;
+    function gestionPersonaje(aux) {
+      if (!aux) {
+        if (androidIzquierda) player.spriteState = 1;
+        if (androidDerecha) player.spriteState = 2;
+        player.spriteState = 0;
+      } else {
+        // player.spriteState = 3;
         console.log("jaja");
       }
     }
@@ -391,7 +399,7 @@
       } else if (controller.right || androidDerecha && !specialSprites) {
         player.spriteState = 2;
         player.x_vel += 0.5;
-      } else if(!specialSprites) {
+      } else if (!specialSprites) {
         player.spriteState = 0;
       } else {
         androidDerecha = false;
