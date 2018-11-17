@@ -204,7 +204,7 @@
     jonRight.src = 'JonD.png';
 
     var jonDragon = new Image();
-    jonDragon.src = "drogon.png";
+    jonDragon.src = "drogonn.png";
 
 
 
@@ -302,22 +302,22 @@
             .y + dragon.alto > player.y) && (dragon.y + dragon.alto < player.y + player.alto)) {
           player.y_vel = -20;
           gravity = 0;
+          player.spriteState = 3;
+          specialSprites = true;
 
           //Intervalo para el PU
 
           if (dragon.type == 1) {
             function intervalTrigger() {
               return window.setInterval(function () {
-                specialSprites = true;
-                //player.spriteState = 3;
-                gestionPersonaje(true);
-                window.alert("cobadonga");
-                player.spriteState = 3;
+                specialSprites = false;
+                player.spriteState = 0;
                 gravity = 0.2;
                 window.clearInterval(id);
-              }, 800);
+              }, 1500);
             };
             var id = intervalTrigger();
+            //player.spriteState = 0;
             //window.clearInterval(id);
           }
         }
@@ -339,9 +339,9 @@
 
     function gestionPersonaje(aux){
       if(!aux){
-          //if(androidIzquierda)  player.spriteState = 1;
-          //if(androidDerecha)  player.spriteState = 2;
-          //player.spriteState = 0;
+          if(androidIzquierda)  player.spriteState = 1;
+          if(androidDerecha)  player.spriteState = 2;
+          player.spriteState = 0;
       }else{
        // player.spriteState = 3;
         console.log("jaja");
@@ -384,22 +384,20 @@
 
     loop = function () {
 
+      //Gestión de la velocidad y de los sprites:
       if (controller.left || androidIzquierda) {
-        gestionPersonaje(false);
-        //player.spriteState = 1;
+        player.spriteState = 1;
         player.x_vel -= 0.5;
-      } else {
-        //player.spriteState = 0;
-        androidIzquierda = false;
-      }
-      if (controller.right || androidDerecha) {
-        gestionPersonaje(false);
-        //player.spriteState = 2;
+      } else if (controller.right || androidDerecha) {
+        player.spriteState = 2;
         player.x_vel += 0.5;
+      } else if(!specialSprites) {
+        player.spriteState = 0;
       } else {
         androidDerecha = false;
+        androidIzquierda = false;
       }
-      //player.spriteState = 0;
+
       //Gestión del movimiento del personaje:
       if (player.y >= (height / 2) - (player.alto / 2)) {
         player.y += player.y_vel;
