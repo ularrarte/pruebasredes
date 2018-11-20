@@ -124,6 +124,7 @@
     var platformCount = 8;
 
     var gravity = 0.2;
+    var vx = 0.5;
 
     var androidDerecha = false;
     var androidIzquierda = false;
@@ -291,6 +292,7 @@
             15 > puta.x) &&
           (player.y + player.alto > puta.y) && (player.y + player.alto < puta.y + puta.alto)) {
           player.y_vel = -10;
+          score += 10;
           //console.log("AHHHHHHHHHHHHHHHHHHH");
         }
 
@@ -345,6 +347,21 @@
       }
     }
 
+    function setDificultad(){
+      if (score > 50){ 
+        background.src = "wallpp.png";
+        function intervalTrigger() {
+              return window.setInterval(function () {
+                background.src = "wall.png";
+              }, 1000);
+            };
+            var id = intervalTrigger();
+            
+      }else if(score > 50){
+
+      }
+    }
+
     function gestionPersonaje(aux) {
       if (!aux) {
         if (androidIzquierda) player.spriteState = 1;
@@ -368,6 +385,8 @@
       left: false,
       right: false,
       up: false,
+      
+
       keyListener: function (event) {
 
         var key_state = (event.type == "keydown") ? true : false;
@@ -395,10 +414,10 @@
       //Gestión de la velocidad y de los sprites:
       if (controller.left || androidIzquierda && !specialSprites) {
         player.spriteState = 1;
-        player.x_vel -= 0.5;
+        player.x_vel -= vx;
       } else if (controller.right || androidDerecha && !specialSprites) {
         player.spriteState = 2;
-        player.x_vel += 0.5;
+        player.x_vel += vx;
       } else if (!specialSprites) {
         player.spriteState = 0;
       } else {
@@ -454,7 +473,7 @@
         player.y = plataformas[plataformas.length - 1].y - player.alto + 10;
       }
 
-      score++;
+      //score++;
 
 
 
@@ -465,6 +484,7 @@
       gestionPuntuacion();
       pintaPersonaje();
       pintaPlataformas();
+      setDificultad();
       window.requestAnimationFrame(loop);
     }
 
