@@ -14,7 +14,6 @@
       /* This is half the width */
       margin-top: -200px;
       /* This is half the height */
-
     }
 
     .bgimg {
@@ -75,7 +74,8 @@
     </div>
     <div id="div2" style="position:absolute; top:0; left:0;">
       <img id="cloud" src="https://purepng.com/public/uploads/large/11498493571qdikf8k49uogdl7steagkmhic6kvjidf2rf5ga0shxskr9xztcke16a9mdpkns3gloegtowd2ckyg0vk24x1w1pcofyzokcrx1v4.png"
-        width="700" height="200" style="position:relative; top:150; left:-100; z-index: 0"><img>
+        width="700" height="200" style="position:relative; top:150; left:-100; z-index: 0">
+      <img>
     </div>
 
     <div id="div3" style="position:absolute; top:200; left:0;">
@@ -115,16 +115,21 @@
     pu2.src = "pu2.png";
 
     var specialSprites = false;
+    var heEntrado = false;
 
 
 
     var anchoCanvas = bCanvas.width;
     var altoCanvas = bCanvas.height;
 
-    var platformCount = 8;
+    var platformCount = 9;
 
     var gravity = 0.2;
+
     var vx = 0.5;
+    var vy = -10;
+
+    var isPowerUp = false;
 
     var androidDerecha = false;
     var androidIzquierda = false;
@@ -277,10 +282,6 @@
     function pintaPlataformas() {
 
       for (var i = 0; i < platformCount; i++) {
-
-        //console.log("El primer reich de palacios estaba en el: " + plataformas[i].x + " " + plataformas[i].y);
-        //lienzo.fillRect(plataformas[i].x, plataformas[i].y, 100, 15);
-        //lienzo.strokeRect(plataformas[i].x, plataformas[i].y, 100, 15);
         lienzo.drawImage(plataformasImg, plataformas[i].x, plataformas[i].y);
       }
     }
@@ -291,21 +292,27 @@
         if (player.y_vel > 0 && (player.x + 15 < puta.x + puta.ancho) && (player.x + player.ancho -
             15 > puta.x) &&
           (player.y + player.alto > puta.y) && (player.y + player.alto < puta.y + puta.alto)) {
-          player.y_vel = -10;
+          player.y_vel = vy;
+
           score += 10;
-          //console.log("AHHHHHHHHHHHHHHHHHHH");
+          setDificultad();
         }
 
         player.saltado = true;
 
         //Colisiones con los power ups
 
-        if (player.y_vel > 0 && powerup.x > player.x && (powerup.x + powerup.ancho) < (player.x + player.ancho) && (powerup
+        if (player.y_vel > 0 && powerup.x > player.x && (powerup.x + powerup.ancho) < (player.x + player.ancho) && (
+            powerup
             .y + powerup.alto > player.y) && (powerup.y + powerup.alto < player.y + player.alto)) {
           player.y_vel = -20;
           gravity = 0.1;
           player.spriteState = 3;
           specialSprites = true;
+          isPowerUp = true;
+
+          score += 10;
+          setDificultad();
 
           //Intervalo para el PU
 
@@ -321,6 +328,7 @@
             function spriteChanger() {
               return window.setInterval(function () {
                 player.spriteState = 0;
+                isPowerUp = false;
                 specialSprites = false;
                 window.clearInterval(id2);
               }, 1500);
@@ -347,18 +355,44 @@
       }
     }
 
-    function setDificultad(){
-      if (score > 50){ 
+    function setDificultad() {
+      console.log("VX: " + vx + " VY: " + vy);
+      if (score == 30) {
         background.src = "wallpp.png";
-        function intervalTrigger() {
-              return window.setInterval(function () {
-                background.src = "wall.png";
-              }, 1000);
-            };
-            var id = intervalTrigger();
-            
-      }else if(score > 50){
 
+        vx -= 0.05; vy += 1;
+
+        function intervalTrigger() {
+          return window.setInterval(function () {
+            background.src = "wall.png";
+            window.clearInterval(id);
+          }, 1000);
+        };
+        var id = intervalTrigger();
+      } else if (score == 60) {
+
+        vx -= 0.025; vy += 1;
+
+        function intervalTrigger() {
+          background.src = "wallpp.png";
+          return window.setInterval(function () {
+            background.src = "wall.png";
+            window.clearInterval(id2);
+          }, 1000);
+        };
+        var id2 = intervalTrigger();
+      } else if (score == 90) {
+
+        vx -= 0.025; vy += 1;
+
+
+        function intervalTrigger3() {
+          background.src = "wallpp.png";
+          return window.setInterval(function () {
+            background.src = "wall.png";
+          }, 1000);
+        };
+        var id3 = intervalTrigger3();
       }
     }
 
@@ -385,7 +419,7 @@
       left: false,
       right: false,
       up: false,
-      
+
 
       keyListener: function (event) {
 
@@ -411,19 +445,23 @@
 
     loop = function () {
 
+      console.log(isPowerUp);
+
       //Gestión de la velocidad y de los sprites:
+
       if (controller.left || androidIzquierda && !specialSprites) {
-        player.spriteState = 1;
+        if (!isPowerUp) player.spriteState = 1;
         player.x_vel -= vx;
       } else if (controller.right || androidDerecha && !specialSprites) {
-        player.spriteState = 2;
+        if (!isPowerUp) player.spriteState = 2;
         player.x_vel += vx;
       } else if (!specialSprites) {
-        player.spriteState = 0;
+        if (!isPowerUp) player.spriteState = 0;
       } else {
         androidDerecha = false;
         androidIzquierda = false;
       }
+      
 
       //Gestión del movimiento del personaje:
       if (player.y >= (height / 2) - (player.alto / 2)) {
@@ -484,7 +522,6 @@
       gestionPuntuacion();
       pintaPersonaje();
       pintaPlataformas();
-      setDificultad();
       window.requestAnimationFrame(loop);
     }
 
