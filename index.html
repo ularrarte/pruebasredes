@@ -172,6 +172,10 @@
 
       this.x = Math.random() * (width - this.ancho);
       this.y = position;
+
+      this.vx = 1;
+
+      this.type = 0;
       position += (height / platformCount);
 
     };
@@ -266,7 +270,6 @@
     }
 
 
-    //console.log("Tras sali del for hay: " + plataformas.length);
 
     function pintaPersonaje() {
       //window.alert(player.x + " " + player.y);      
@@ -283,6 +286,16 @@
 
       for (var i = 0; i < platformCount; i++) {
         lienzo.drawImage(plataformasImg, plataformas[i].x, plataformas[i].y);
+      }
+    }
+
+
+    function plataformasMov(n) {
+      for (var i = 0; i < n; i++) {
+        console.log("Entro " + n);
+        var rnd = Math.round(Math.random() * platformCount) - 1;
+        console.log("El aleatoria es: " + rnd);
+        plataformas[rnd].type = 1;
       }
     }
 
@@ -356,11 +369,11 @@
     }
 
     function setDificultad() {
-      console.log("VX: " + vx + " VY: " + vy);
-      if (score == 30) {
+      if (score == 150) {
         background.src = "wallpp.png";
 
-        vx -= 0.05; vy += 1;
+        vx -= 0.05;
+        vy += 1;
 
         function intervalTrigger() {
           return window.setInterval(function () {
@@ -369,9 +382,10 @@
           }, 1000);
         };
         var id = intervalTrigger();
-      } else if (score == 60) {
+      } else if (score == 400) {
 
-        vx -= 0.025; vy += 1;
+        vx -= 0.025;
+        vy += 1;
 
         function intervalTrigger() {
           background.src = "wallpp.png";
@@ -383,7 +397,8 @@
         var id2 = intervalTrigger();
       } else if (score == 90) {
 
-        vx -= 0.025; vy += 1;
+        vx -= 0.025;
+        vy += 1;
 
 
         function intervalTrigger3() {
@@ -445,7 +460,6 @@
 
     loop = function () {
 
-      console.log(isPowerUp);
 
       //Gestión de la velocidad y de los sprites:
 
@@ -461,7 +475,10 @@
         androidDerecha = false;
         androidIzquierda = false;
       }
-      
+
+      if (score > 150) plataformasMov(2)
+      else if (score > 400) plataformasMov(4)
+
 
       //Gestión del movimiento del personaje:
       if (player.y >= (height / 2) - (player.alto / 2)) {
@@ -490,6 +507,22 @@
           player.y_vel += gravity;
         }
       }
+
+      //var subs = platform_broken_substitute;
+      plataformas[4].type = 2;
+      plataformas.forEach(function (p, i) {
+        if (p.type == 2) {
+          if (p.x < 0 || p.x + p.ancho > width) {
+            p.vx *= -1;
+          }
+          p.x += p.vx;
+        }
+      });
+
+
+
+
+
 
 
 
