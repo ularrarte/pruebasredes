@@ -89,18 +89,67 @@
 
 
   </div>
-  <button class="android1">Æ</button>
-  <button class="android1">Æ2</button>
-
+  <canvas id="menu" width="800" height="480" style="border:1px solid #000000;"></canvas>
 
   <script type="text/javascript">
     var loop, controller;
 
+    var bCanvas = document.getElementById("lienzo");
+    var lienzo = bCanvas.getContext("2d");
+
+    //MENU:
+
+    var menu = document.getElementById("menu");
+    var cmenu = menu.getContext("2d");
+
+    var container = document.getElementById("canvas-container");
+    container.style.display = "none";
+
+
+    var mouseX;
+    var mouseY;
+
+
+
+    //Estados
+
+    const gameStates = {
+      currentState: undefined,
+      startGame() {
+        container.style.display = "initial";
+        menu.style.display = "none"
+      },
+      game() {
+        //El juego en si
+      },
+      menu() {
+        document.addEventListener('click', mouseCliked, false)
+      },
+      menuSetup() {
+        drawMenu();
+        gameStates.currentState = gameStates.menu();
+        gameStates.currentState;
+      },
+      gameOver() {
+        container.style.display = "none";
+        menu.style.display = "initial"
+        gameStates.currentState = gameStates.menu();
+        gameStates.currentState;
+      }
+    };
+
+
+
+
+
+    Button.prototype.checkClicked = function () {
+      if (this.xLeft <= mouseX && mouseX <= this.xRight && this.yTop <= mouseY && mouseY <= this.yBotton)
+        return true
+    };
+
     var width = 500;
     var height = 600;
 
-    var bCanvas = document.getElementById("lienzo");
-    var lienzo = bCanvas.getContext("2d");
 
     var background = new Image();
     background.src = "wall.png";
@@ -122,6 +171,7 @@
 
 
 
+
     var anchoCanvas = bCanvas.width;
     var altoCanvas = bCanvas.height;
 
@@ -138,6 +188,16 @@
     var androidIzquierda = false;
 
     var score = 0;
+
+    var boton1 = new Button(284, 500, 147, 207)
+
+    function Button(xL, xR, yT, yB) {
+      this.xLeft = xL;
+      this.xRight = xR;
+      this.yTop = yT;
+      this.yBotton = yB;
+    }
+
 
     var player = {
       x: anchoCanvas / 2 - 50,
@@ -185,9 +245,10 @@
 
       position += (height / platformCount);
 
-      if (score > 250) this.probabilidad = [0, 0, 0, 1, 2]; //20% de probabilidad de baldosas con movimiento (1 de cada 5)
-      else if (score > 750) this.probabilidad = [0, 0, 0, 1, 2, 2]; //40% de probabilidad de baldosa con moivmiento (2 de cada 5)
-      else if (score > 1500) this.probabilidad = [0, 0, 1, 1, 2, 2, 2]; //50% de probabilidad (3 de cada 6)
+      if (score > 100) this.probabilidad = [0, 0, 0, 1, 2]; //20% de probabilidad de baldosas con movimiento (1 de cada 5)
+      else if (score > 500) this.probabilidad = [0, 0, 0, 1, 2, 2]; //40% de probabilidad de baldosa con moivmiento (2 de cada 5)
+      else if (score > 1500) this.probabilidad = [0, 0, 1, 1, 2, 2]; //50% de probabilidad (3 de cada 6)
+      else if (score > 2500) this.probabilidad = [0, 0, 1, 1, 2, 2, 2]; //50% de probabilidad (3 de cada 6)
       else this.probabilidad = [0];
       //Una vez tenemos la probabilidad, la asignamos sobre el tipo
       this.type = this.probabilidad[Math.floor(Math.random() * this.probabilidad.length)];
@@ -255,8 +316,28 @@
 
 
     window.onload = function () {
-      getMobileOperatingSystem();
+      //getMobileOperatingSystem();
+      gameStates.currentState = gameStates.menuSetup()
+      gameStates.currentState;
     };
+
+    function drawMenu() {
+      var img = new Image();
+      img.src = "MenuPrueba.jpg"
+      img.onload = function () {
+        cmenu.drawImage(img, 0, 0);
+      };
+    }
+
+    function mouseCliked(e) {
+      mouseX = e.pageX - menu.offsetLeft;
+      mouseY = e.pageY - menu.offsetTop;
+      if (boton1.checkClicked()) {
+        console.log("De oca a oca el valle no se toca")
+        gameStates.currentState = gameStates.startGame()
+        gameStates.currentState;
+      }
+    }
 
 
     function getMobileOperatingSystem() {
@@ -373,15 +454,29 @@
 
 
     function gestionPowerUp() {
-      powerup = {
-        ancho: 5,
-        alto: 5,
-        render: true,
-        type: 1,
 
-        x: plataformas[0].x + plataformas[2].ancho / 2,
-        y: plataformas[0].y - plataformas[2].alto / 3,
+      if (plataformas[0].type == 0 || plataformas[0].type == 1) {
+        powerup = {
+          ancho: 5,
+          alto: 5,
+          render: true,
+          type: 1,
+
+          x: plataformas[0].x + plataformas[2].ancho / 2,
+          y: plataformas[0].y - plataformas[2].alto / 2,
+        }
+      }else{
+        powerup = {
+          ancho: 5,
+          alto: 5,
+          render: true,
+          type: 1,
+
+          x: 0,
+          y: 0,
+        }
       }
+
     }
 
     function setDificultad() {
@@ -538,6 +633,10 @@
 
       if (player.y > 580) {
         //console.log("OOOOOOOOOOOOOOOOOOOOOOO");
+
+        gameStates.currentState = gameStates.gameOver();
+        gameStates.currentState;
+
         player.x = plataformas[plataformas.length - 1].x + 20;
         player.y = plataformas[plataformas.length - 1].y - player.alto + 10;
       }
