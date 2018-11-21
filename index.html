@@ -175,8 +175,16 @@
 
       this.vx = 1;
 
-      this.type = 0;
-      position += (height / platformCount);
+      position += (height / platformCount)
+
+      //Establecemos la probabilidad de que salga un tipo de baldosa u otra:
+      if (score > 50) this.probabilidad = [0, 0, 0, 0, 1]; //20% de probabilidad de baldosas con movimiento (1 de cada 5)
+      else if (score > 100) this.probabilidad = [0, 0, 0, 1, 1]; //40% de probabilidad de baldosa con moivmiento (2 de cada 5)
+      else if (score > 150) this.probabilidad = [0, 0, 0, 1, 1, 1]; //% de probabilidad (3 de cada 6)
+      else this.probabilidad = [0];
+
+      //Una vez tenemos la probabilidad, la asignamos sobre el tipo
+      this.type = Math.floor(Math.random() * this.probabilidad.length - 1);
 
     };
 
@@ -202,7 +210,7 @@
 
     var base = new Base();
 
-    var Agujero = function () {}
+    var Agujero = function () { }
 
     var jon = new Image();
     jon.src = 'Jon2.png';
@@ -290,20 +298,12 @@
     }
 
 
-    function plataformasMov(n) {
-      for (var i = 0; i < n; i++) {
-        console.log("Entro " + n);
-        var rnd = Math.round(Math.random() * platformCount) - 1;
-        console.log("El aleatoria es: " + rnd);
-        plataformas[rnd].type = 1;
-      }
-    }
 
     function putasColisionesMeComenLosPutosCojones2() {
       for (var i = 0; i < plataformas.length; i++) {
         var puta = plataformas[i];
         if (player.y_vel > 0 && (player.x + 15 < puta.x + puta.ancho) && (player.x + player.ancho -
-            15 > puta.x) &&
+          15 > puta.x) &&
           (player.y + player.alto > puta.y) && (player.y + player.alto < puta.y + puta.alto)) {
           player.y_vel = vy;
 
@@ -316,7 +316,7 @@
         //Colisiones con los power ups
 
         if (player.y_vel > 0 && powerup.x > player.x && (powerup.x + powerup.ancho) < (player.x + player.ancho) && (
-            powerup
+          powerup
             .y + powerup.alto > player.y) && (powerup.y + powerup.alto < player.y + player.alto)) {
           player.y_vel = -20;
           gravity = 0.1;
@@ -364,7 +364,7 @@
         type: 1,
 
         x: plataformas[2].x + plataformas[2].ancho / 2,
-        y: plataformas[2].y - plataformas[2].alto / 2,
+        y: plataformas[2].y - plataformas[2].alto / 3,
       }
     }
 
@@ -382,7 +382,7 @@
           }, 1000);
         };
         var id = intervalTrigger();
-      } else if (score == 400) {
+      } else if (score == 300) {
 
         vx -= 0.025;
         vy += 1;
@@ -395,7 +395,7 @@
           }, 1000);
         };
         var id2 = intervalTrigger();
-      } else if (score == 90) {
+      } else if (score == 500) {
 
         vx -= 0.025;
         vy += 1;
@@ -475,9 +475,6 @@
         androidDerecha = false;
         androidIzquierda = false;
       }
-
-      if (score > 150) plataformasMov(2)
-      else if (score > 400) plataformasMov(4)
 
 
       //Gestión del movimiento del personaje:
