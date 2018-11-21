@@ -108,6 +108,9 @@
     var plataformasImg = new Image();
     plataformasImg.src = "plataforma.png"
 
+    var plataformasImg2 = new Image();
+    plataformasImg2.src = "plataforma2.png"
+
     var dragonSprite = new Image();
     dragonSprite.src = "pu1.png";
 
@@ -173,12 +176,21 @@
       this.x = Math.random() * (width - this.ancho);
       this.y = position;
 
-      this.vx = 1;
+      this.vx = Math.round(Math.random()); //Velocidad positiva o negativa, se refleja como 0 o 1, en caso de ser 0 se moficiará
+
+      if (this.vx == 0) this.vx = -1; //Si la velocidad ha salido 0, la ponemos a -1
 
       this.puntuado = false;
+      this.saltado = false;
 
-      this.type = 0;
       position += (height / platformCount);
+
+      if (score > 250) this.probabilidad = [0, 0, 0, 1, 2]; //20% de probabilidad de baldosas con movimiento (1 de cada 5)
+      else if (score > 750) this.probabilidad = [0, 0, 0, 1, 2, 2]; //40% de probabilidad de baldosa con moivmiento (2 de cada 5)
+      else if (score > 1500) this.probabilidad = [0, 0, 1, 1, 2, 2, 2]; //50% de probabilidad (3 de cada 6)
+      else this.probabilidad = [0];
+      //Una vez tenemos la probabilidad, la asignamos sobre el tipo
+      this.type = this.probabilidad[Math.floor(Math.random() * this.probabilidad.length)];
 
     };
 
@@ -287,7 +299,12 @@
     function pintaPlataformas() {
 
       for (var i = 0; i < platformCount; i++) {
-        lienzo.drawImage(plataformasImg, plataformas[i].x, plataformas[i].y);
+        var aux = plataformas[i];
+        if (!plataformas[i].saltado && plataformas[i].type == 1 || plataformas[i].type == 0) lienzo.drawImage(
+          plataformasImg, plataformas[i].x, plataformas[i].y);
+        else if (plataformas[i].type == 2 && !plataformas[i].saltado) lienzo.drawImage(plataformasImg2, plataformas[i].x,
+          plataformas[i].y);
+
       }
     }
 
@@ -299,13 +316,17 @@
         if (player.y_vel > 0 && (player.x + 15 < puta.x + puta.ancho) && (player.x + player.ancho -
             15 > puta.x) &&
           (player.y + player.alto > puta.y) && (player.y + player.alto < puta.y + puta.alto)) {
-          player.y_vel = vy;
+          if (!puta.saltado) player.y_vel = vy;
+
+          if (puta.type == 2) {
+            plataformas[i].saltado = true;
+          }
 
           if (!puta.puntuado) {
             score += 10;
             plataformas[i].puntuado = true;
           }
-          setDificultad();
+
         }
 
         player.saltado = true;
@@ -345,8 +366,6 @@
             };
             var id = intervalTrigger();
             var id2 = spriteChanger();
-            //player.spriteState = 0;
-            //window.clearInterval(id);
           }
         }
       }
@@ -360,8 +379,8 @@
         render: true,
         type: 1,
 
-        x: plataformas[2].x + plataformas[2].ancho / 2,
-        y: plataformas[2].y - plataformas[2].alto / 2,
+        x: plataformas[0].x + plataformas[2].ancho / 2,
+        y: plataformas[0].y - plataformas[2].alto / 3,
       }
     }
 
@@ -379,7 +398,7 @@
           }, 1000);
         };
         var id = intervalTrigger();
-      } else if (score == 400) {
+      } else if (score == 500) {
 
         vx -= 0.025;
         vy += 1;
@@ -392,7 +411,7 @@
           }, 1000);
         };
         var id2 = intervalTrigger();
-      } else if (score == 90) {
+      } else if (score == 1000) {
 
         vx -= 0.025;
         vy += 1;
@@ -405,17 +424,6 @@
           }, 1000);
         };
         var id3 = intervalTrigger3();
-      }
-    }
-
-    function gestionPersonaje(aux) {
-      if (!aux) {
-        if (androidIzquierda) player.spriteState = 1;
-        if (androidDerecha) player.spriteState = 2;
-        player.spriteState = 0;
-      } else {
-        // player.spriteState = 3;
-        console.log("jaja");
       }
     }
 
@@ -503,19 +511,14 @@
         }
       }
 
-      //var subs = platform_broken_substitute;
-      plataformas[4].type = 2;
       plataformas.forEach(function (p, i) {
-        if (p.type == 2) {
+        if (p.type == 1) {
           if (p.x < 0 || p.x + p.ancho > width) {
             p.vx *= -1;
           }
           p.x += p.vx;
         }
       });
-
-
-
 
 
 
