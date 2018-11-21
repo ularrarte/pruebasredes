@@ -175,16 +175,10 @@
 
       this.vx = 1;
 
-      position += (height / platformCount)
+      this.puntuado = false;
 
-      //Establecemos la probabilidad de que salga un tipo de baldosa u otra:
-      if (score > 50) this.probabilidad = [0, 0, 0, 0, 1]; //20% de probabilidad de baldosas con movimiento (1 de cada 5)
-      else if (score > 100) this.probabilidad = [0, 0, 0, 1, 1]; //40% de probabilidad de baldosa con moivmiento (2 de cada 5)
-      else if (score > 150) this.probabilidad = [0, 0, 0, 1, 1, 1]; //% de probabilidad (3 de cada 6)
-      else this.probabilidad = [0];
-
-      //Una vez tenemos la probabilidad, la asignamos sobre el tipo
-      this.type = Math.floor(Math.random() * this.probabilidad.length - 1);
+      this.type = 0;
+      position += (height / platformCount);
 
     };
 
@@ -210,7 +204,7 @@
 
     var base = new Base();
 
-    var Agujero = function () { }
+    var Agujero = function () {}
 
     var jon = new Image();
     jon.src = 'Jon2.png';
@@ -303,11 +297,14 @@
       for (var i = 0; i < plataformas.length; i++) {
         var puta = plataformas[i];
         if (player.y_vel > 0 && (player.x + 15 < puta.x + puta.ancho) && (player.x + player.ancho -
-          15 > puta.x) &&
+            15 > puta.x) &&
           (player.y + player.alto > puta.y) && (player.y + player.alto < puta.y + puta.alto)) {
           player.y_vel = vy;
 
-          score += 10;
+          if (!puta.puntuado) {
+            score += 10;
+            plataformas[i].puntuado = true;
+          }
           setDificultad();
         }
 
@@ -316,7 +313,7 @@
         //Colisiones con los power ups
 
         if (player.y_vel > 0 && powerup.x > player.x && (powerup.x + powerup.ancho) < (player.x + player.ancho) && (
-          powerup
+            powerup
             .y + powerup.alto > player.y) && (powerup.y + powerup.alto < player.y + player.alto)) {
           player.y_vel = -20;
           gravity = 0.1;
@@ -324,7 +321,7 @@
           specialSprites = true;
           isPowerUp = true;
 
-          score += 10;
+          score += 50;
           setDificultad();
 
           //Intervalo para el PU
@@ -364,7 +361,7 @@
         type: 1,
 
         x: plataformas[2].x + plataformas[2].ancho / 2,
-        y: plataformas[2].y - plataformas[2].alto / 3,
+        y: plataformas[2].y - plataformas[2].alto / 2,
       }
     }
 
@@ -382,7 +379,7 @@
           }, 1000);
         };
         var id = intervalTrigger();
-      } else if (score == 300) {
+      } else if (score == 400) {
 
         vx -= 0.025;
         vy += 1;
@@ -395,7 +392,7 @@
           }, 1000);
         };
         var id2 = intervalTrigger();
-      } else if (score == 500) {
+      } else if (score == 90) {
 
         vx -= 0.025;
         vy += 1;
@@ -475,6 +472,7 @@
         androidDerecha = false;
         androidIzquierda = false;
       }
+
 
 
       //Gestión del movimiento del personaje:
