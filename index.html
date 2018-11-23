@@ -246,12 +246,13 @@
       position += (height / platformCount);
 
       if (score > 100) this.probabilidad = [0, 0, 0, 1, 2]; //20% de probabilidad de baldosas con movimiento (1 de cada 5)
-      else if (score > 500) this.probabilidad = [0, 0, 0, 1, 2, 2]; //40% de probabilidad de baldosa con moivmiento (2 de cada 5)
-      else if (score > 1500) this.probabilidad = [0, 0, 1, 1, 2, 2]; //50% de probabilidad (3 de cada 6)
-      else if (score > 2500) this.probabilidad = [0, 0, 1, 1, 2, 2, 2]; //50% de probabilidad (3 de cada 6)
+      if (score > 500) this.probabilidad = [0, 0, 0, 1, 2, 2]; //40% de probabilidad de baldosa con moivmiento (2 de cada 5)
+      if (score > 1500) this.probabilidad = [0, 0, 1, 1, 2, 2]; //50% de probabilidad (3 de cada 6)
+      if (score > 2500) this.probabilidad = [0, 0, 1, 1, 2, 2, 2]; //50% de probabilidad (3 de cada 6)
       else this.probabilidad = [0];
       //Una vez tenemos la probabilidad, la asignamos sobre el tipo
       this.type = this.probabilidad[Math.floor(Math.random() * this.probabilidad.length)];
+      console.log("akaka " + this.probabilidad.length);
 
     };
 
@@ -648,6 +649,7 @@
       lienzo.clearRect(0, 0, bCanvas.width, bCanvas.height);
 
       gestionPowerUp();
+      setDificultad();
       putasColisionesMeComenLosPutosCojones2()
       gestionPuntuacion();
       pintaPersonaje();
