@@ -466,7 +466,7 @@
           x: plataformas[0].x + plataformas[2].ancho / 2,
           y: plataformas[0].y - plataformas[2].alto / 2,
         }
-      }else{
+      } else {
         powerup = {
           ancho: 5,
           alto: 5,
@@ -481,7 +481,7 @@
     }
 
     function setDificultad() {
-      if (score == 150) {
+      if (score >= 500) {
         background.src = "wallpp.png";
 
         vx -= 0.05;
@@ -494,7 +494,8 @@
           }, 1000);
         };
         var id = intervalTrigger();
-      } else if (score == 500) {
+      }
+      if (score >= 1000) {
 
         vx -= 0.025;
         vy += 1;
@@ -507,7 +508,8 @@
           }, 1000);
         };
         var id2 = intervalTrigger();
-      } else if (score == 1000) {
+      }
+      if (score >= 2000) {
 
         vx -= 0.025;
         vy += 1;
@@ -649,7 +651,6 @@
       lienzo.clearRect(0, 0, bCanvas.width, bCanvas.height);
 
       gestionPowerUp();
-      setDificultad();
       putasColisionesMeComenLosPutosCojones2()
       gestionPuntuacion();
       pintaPersonaje();
