@@ -6,7 +6,7 @@ var lienzo = bCanvas.getContext("2d");
 var tCanvas = document.getElementById("topCanvas");
 var ctx = tCanvas.getContext("2d");
 
-canvas1height = 400; 
+canvas1height = 400;
 
 //MENU:
 
@@ -167,7 +167,6 @@ function Platform() {
     else this.probabilidad = [0];
     //Una vez tenemos la probabilidad, la asignamos sobre el tipo
     this.type = this.probabilidad[Math.floor(Math.random() * this.probabilidad.length)];
-    console.log("kokoka " + this.probabilidad.length);
 
 };
 
@@ -288,13 +287,12 @@ var enemy = function () {
         if (this.attack.length < 1) {
             console.log("New shoot! " + this.attack.length);
             this.attack.push(new arrow((this.x + 25), (this.y + 50), 3));
-            console.log(this.attack.length);
         }
     }
 
 }
 
-function arrow(positionX, positionY, vY){
+function arrow(positionX, positionY, vY) {
 
     // Public
     this.posX = positionX;
@@ -305,44 +303,44 @@ function arrow(positionX, positionY, vY){
     this.projectileWidth = 21;
     this.projectileHeight = 16;
 
-    this.posCanvas = false; 
+    this.posCanvas = false;
     this.existence = true;
 
 
-    this.fall = function() {
-        if (this.posCanvas){
+    this.fall = function () {
+        if (this.posCanvas) {
             this.posYbelow += this.vy;
-        } else if (!this.posCanvas){
+        } else if (!this.posCanvas) {
             this.posY += this.vy;
         }
     }
 
-    this.draw = function(){
+    this.draw = function () {
 
         // Draw the arrow in both canvas and set delay between them
-        if (this.posY < canvas1height && this.posYbelow <= height){
+        if (this.posY < canvas1height && this.posYbelow <= height) {
             // Top canvas
             this.fall();
             ctx.drawImage(espanha, 0, 0, this.projectileWidth, this.projectileHeight, this.posX, this.posY, 21, 16);
-            
+
             // Collider
             ctx.rect(this.posX, this.posY, this.projectileWidth, this.proejctileHeight);
             ctx.stroke();
 
-        } else if (this.posY > canvas1height && this.posYbelow <= height){
+        } else if (this.posY > canvas1height && this.posYbelow <= height) {
 
-            if (!this.posCanvas){
+            if (!this.posCanvas) {
                 // Transition
                 setTimeout(this.cloudDelay.bind(this), 3000);
             } else {
                 // Bottom canvas
-                console.log("Gucci ni prada");
                 this.fall();
-                lienzo.drawImage(espanha, 0, 0, this.projectileWidth, this.projectileHeight, this.posX, this.posY, 21, 16);
-                
-             // Collider
-             lienzo.rect(this.posX, this.posYbelow, this.projectileWidth, this.proejctileHeight);
-             lienzo.stroke();
+                lienzo.drawImage(espanha, 0, 0, this.projectileWidth, this.projectileHeight, this.posX, this.posYbelow, 21, 16);
+                //  pintaPersonaje(true);
+
+                // Collider
+                lienzo.rect(this.posX, this.posYbelow, this.projectileWidth, this.proejctileHeight);
+                lienzo.stroke();
             }
 
         } else {
@@ -352,13 +350,15 @@ function arrow(positionX, positionY, vY){
 
     }
 
-    this.cloudDelay = function(){
+    this.cloudDelay = function () {
         this.posCanvas = true;
     }
 
 
-    this.collision = function(player) { 
+    this.collision = function (player) {
 
+        /*console.log("PosX: " + this.posX + " PlayerX: " + player.x);
+        console.log("PosY: " + this.posYbelow + " PlayerY: " + player.y);
         if (this.posX < player.x + player.width &&
             this.posX + this.projectileWidth > player.x &&
             this.posYbelow - this.projectileHeight < player.y + player.height &&
@@ -368,8 +368,15 @@ function arrow(positionX, positionY, vY){
             
             }
 
-    }
+    }*/
+        console.log("ProyectY: " + this.posYbelow + " AltoPoyect: " + this.projectileHeight);
+        if (player.x < this.posX && (player.x + player.ancho) > (this.posX + this.projectileWidth) &&
+            (this.posYbelow + this.projectileHeight > player.y) && (this.posYbelow + this.projectileHeight) < (player.y + player.alto + 10)) {
+                gameStates.currentState = gameStates.gameOver();
+                gameStates.currentState;
+        }
 
+    }
 }
 
 var enem = new enemy;
@@ -435,6 +442,7 @@ function pintaPersonaje(boolAux) {
     if (player.spriteState == 2) lienzo.drawImage(jonRight, player.x, player.y);
     if (player.spriteState == 3) lienzo.drawImage(jonDragon, player.x, player.y);
 
+
     if (powerup.render) lienzo.drawImage(dragonSprite, powerup.x, powerup.y);
 }
 
@@ -476,8 +484,7 @@ function putasColisionesMeComenLosPutosCojones2() {
         //Colisiones con los power ups
 
         if (player.y_vel > 0 && powerup.x > player.x && (powerup.x + powerup.ancho) < (player.x + player.ancho) && (
-                powerup
-                .y + powerup.alto > player.y) && (powerup.y + powerup.alto < player.y + player.alto)) {
+                powerup.y + powerup.alto > player.y) && (powerup.y + powerup.alto < player.y + player.alto)) {
             player.y_vel = -20;
             gravity = 0.1;
             player.spriteState = 3;
@@ -523,7 +530,7 @@ function gestionPowerUp() {
             render: true,
             type: 1,
 
-            x: plataformas[0].x + plataformas[2].ancho/2 - 12,
+            x: plataformas[0].x + plataformas[2].ancho / 2 - 12,
             y: plataformas[0].y - plataformas[2].alto,
         }
     } else {
@@ -711,11 +718,12 @@ loop = function () {
     lienzo.clearRect(0, 0, bCanvas.width, bCanvas.height);
     ctx.clearRect(0, 0, width, height);
 
-    enem.drawEnemy();
+
     gestionPowerUp();
     putasColisionesMeComenLosPutosCojones2()
     gestionPuntuacion();
     pintaPersonaje();
+    enem.drawEnemy();
     pintaPlataformas();
     window.requestAnimationFrame(loop);
 }
