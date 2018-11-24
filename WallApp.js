@@ -103,6 +103,7 @@ var androidIzquierda = false;
 var score = 0;
 
 var boton1 = new Button(284, 500, 147, 207)
+var roca = true;
 
 function Button(xL, xR, yT, yB) {
     this.xLeft = xL;
@@ -216,14 +217,15 @@ var auxX = 50;
 var auxY = 450;
 
 espanha = document.getElementById('sprite');
+espania = document.getElementById('walker');
 
 var enemy = function () {
 
     // Set cube size
     this.x = 150;
-    this.y = 85;
-    this.width = 50;
-    this.height = 50;
+    this.y = 40;
+    this.width = 36;
+    this.height = 65;
 
     // Direction: True -> / False <- 
     this.vx = true;
@@ -242,7 +244,8 @@ var enemy = function () {
         this.shoot();
 
         // Draw in the top canvas
-        ctx.fillRect(this.x, this.y, this.width, this.height);
+        //ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.drawImage(espania, 0, 0, this.width, this.height, this.x, this.y, 36, 65);
 
         // Draw projectiles
         this.attack.forEach(function (arrow) {
@@ -299,8 +302,8 @@ function arrow(positionX, positionY, vY){
     this.posYbelow = 0;
     this.vy = vY;
 
-    this.projectileWidth = 30;
-    this.projectileHeight = 100;
+    this.projectileWidth = 21;
+    this.projectileHeight = 16;
 
     this.posCanvas = false; 
     this.existence = true;
@@ -320,7 +323,7 @@ function arrow(positionX, positionY, vY){
         if (this.posY < canvas1height && this.posYbelow <= height){
             // Top canvas
             this.fall();
-            ctx.drawImage(espanha, 0, 0, this.projectileWidth, this.projectileHeight, this.posX, this.posY, 50, 50);
+            ctx.drawImage(espanha, 0, 0, this.projectileWidth, this.projectileHeight, this.posX, this.posY, 21, 16);
             
             // Collider
             ctx.rect(this.posX, this.posY, this.projectileWidth, this.proejctileHeight);
@@ -333,8 +336,10 @@ function arrow(positionX, positionY, vY){
                 setTimeout(this.cloudDelay.bind(this), 3000);
             } else {
                 // Bottom canvas
+                console.log("Gucci ni prada");
                 this.fall();
-                lienzo.drawImage(espanha, 0, 0, this.projectileWidth, this.projectileHeight, this.posX, this.posYbelow, 50, 50);
+                lienzo.drawImage(espanha, 0, 0, this.projectileWidth, this.projectileHeight, this.posX, this.posY, 21, 16);
+                
              // Collider
              lienzo.rect(this.posX, this.posYbelow, this.projectileWidth, this.proejctileHeight);
              lienzo.stroke();
@@ -422,7 +427,7 @@ function getMobileOperatingSystem() {
 
 
 
-function pintaPersonaje() {
+function pintaPersonaje(boolAux) {
     //window.alert(player.x + " " + player.y);      
     lienzo.drawImage(background, 0, 0);
     if (player.spriteState == 0) lienzo.drawImage(jon, player.x, player.y);
@@ -513,13 +518,13 @@ function gestionPowerUp() {
 
     if (plataformas[0].type == 0 || plataformas[0].type == 1) {
         powerup = {
-            ancho: 5,
-            alto: 5,
+            ancho: 25,
+            alto: 25,
             render: true,
             type: 1,
 
-            x: plataformas[0].x + plataformas[2].ancho / 2,
-            y: plataformas[0].y - plataformas[2].alto / 2,
+            x: plataformas[0].x + plataformas[2].ancho/2 - 12,
+            y: plataformas[0].y - plataformas[2].alto,
         }
     } else {
         powerup = {
@@ -528,8 +533,8 @@ function gestionPowerUp() {
             render: true,
             type: 1,
 
-            x: 0,
-            y: 0,
+            x: -20,
+            y: -20,
         }
     }
 
