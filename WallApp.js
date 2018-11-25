@@ -65,7 +65,10 @@ var height = 600;
 var background = new Image();
 background.src = "wall.png";
 
+
+
 var topBackgorund = new Image();
+topBackgorund.src = "topwall.png"
 
 var plataformasImg = new Image();
 plataformasImg.src = "plataforma.png"
@@ -372,6 +375,7 @@ function arrow(positionX, positionY, vY) {
         console.log("ProyectY: " + this.posYbelow + " AltoPoyect: " + this.projectileHeight);
         if (player.x < this.posX && (player.x + player.ancho) > (this.posX + this.projectileWidth) &&
             (this.posYbelow + this.projectileHeight > player.y) && (this.posYbelow + this.projectileHeight) < (player.y + player.alto + 10)) {
+                this.existence = false;
                 gameStates.currentState = gameStates.gameOver();
                 gameStates.currentState;
         }
@@ -437,6 +441,7 @@ function getMobileOperatingSystem() {
 function pintaPersonaje(boolAux) {
     //window.alert(player.x + " " + player.y);      
     lienzo.drawImage(background, 0, 0);
+    ctx.drawImage(topBackgorund, 0, 0);
     if (player.spriteState == 0) lienzo.drawImage(jon, player.x, player.y);
     if (player.spriteState == 1) lienzo.drawImage(jonLeft, player.x, player.y);
     if (player.spriteState == 2) lienzo.drawImage(jonRight, player.x, player.y);
