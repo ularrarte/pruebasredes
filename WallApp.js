@@ -79,8 +79,6 @@ plataformasImg2.src = "plataforma2.png"
 var dragonSprite = new Image();
 dragonSprite.src = "pu1.png";
 
-var pu2 = new Image();
-pu2.src = "pu2.png";
 
 var specialSprites = false;
 var heEntrado = false;
@@ -91,12 +89,12 @@ var heEntrado = false;
 var anchoCanvas = bCanvas.width;
 var altoCanvas = bCanvas.height;
 
-var platformCount = 9;
+var platformCount = 8;
 
 var gravity = 0.2;
 
 var vx = 0.5;
-var vy = -10;
+var vy = -9;
 
 var isPowerUp = false;
 
@@ -104,6 +102,8 @@ var androidDerecha = false;
 var androidIzquierda = false;
 
 var score = 0;
+
+var newLevel = true;
 
 var boton1 = new Button(284, 500, 147, 207)
 var roca = true;
@@ -163,11 +163,26 @@ function Platform() {
     position += (height / platformCount);
 
 
-    if (score > 2500) this.probabilidad = [0, 0, 1, 1, 2, 2, 2]; //50% de probabilidad (3 de cada 6)
-    else if (score > 1500) this.probabilidad = [0, 0, 1, 1, 2, 2]; //50% de probabilidad (3 de cada 6)
-    else if (score > 500) this.probabilidad = [0, 0, 0, 1, 2, 2]; //40% de probabilidad de baldosa con moivmiento (2 de cada 5)
-    else if (score > 100) this.probabilidad = [0, 0, 0, 1, 2]; //20% de probabilidad de baldosas con movimiento (1 de cada 5)
-    else this.probabilidad = [0];
+    if (score > 2500) {
+        this.probabilidad = [0, 0, 1, 1, 2, 2, 2];
+        setDificultad();
+    } else if (score > 1500) {
+        this.probabilidad = [0, 0, 1, 1, 2, 2];
+        setDificultad();
+    } else if (score > 500) {
+        this.probabilidad = [0, 0, 0, 1, 2, 2];
+        setDificultad();
+    } else if (score > 100) {
+
+        this.probabilidad = [0, 0, 0, 1, 2];
+        if (newLevel) {
+            background.src = "wallpp.png";
+            setDificultad();
+        }
+        newLevel = false;
+    } else {
+        this.probabilidad = [0];
+    }
     //Una vez tenemos la probabilidad, la asignamos sobre el tipo
     this.type = this.probabilidad[Math.floor(Math.random() * this.probabilidad.length)];
 
@@ -179,6 +194,7 @@ var powerup;
 for (var i = 0; i < platformCount; i++) {
     plataformas.push(new Platform());
 }
+
 
 
 player.x = plataformas[plataformas.length - 1].x + 20;
@@ -288,7 +304,6 @@ var enemy = function () {
     this.shoot = function () {
 
         if (this.attack.length < 1) {
-            console.log("New shoot! " + this.attack.length);
             this.attack.push(new arrow((this.x + 25), (this.y + 50), 3));
         }
     }
@@ -372,12 +387,11 @@ function arrow(positionX, positionY, vY) {
             }
 
     }*/
-        console.log("ProyectY: " + this.posYbelow + " AltoPoyect: " + this.projectileHeight);
         if (player.x < this.posX && (player.x + player.ancho) > (this.posX + this.projectileWidth) &&
             (this.posYbelow + this.projectileHeight > player.y) && (this.posYbelow + this.projectileHeight) < (player.y + player.alto + 10)) {
-                this.existence = false;
-                gameStates.currentState = gameStates.gameOver();
-                gameStates.currentState;
+            this.existence = false;
+            gameStates.currentState = gameStates.gameOver();
+            gameStates.currentState;
         }
 
     }
@@ -405,7 +419,6 @@ function mouseCliked(e) {
     mouseX = e.pageX - menu.offsetLeft;
     mouseY = e.pageY - menu.offsetTop;
     if (boton1.checkClicked()) {
-        console.log("De oca a oca el valle no se toca")
         gameStates.currentState = gameStates.startGame()
         gameStates.currentState;
     }
@@ -442,13 +455,13 @@ function pintaPersonaje(boolAux) {
     //window.alert(player.x + " " + player.y);      
     lienzo.drawImage(background, 0, 0);
     ctx.drawImage(topBackgorund, 0, 0);
+    gestionPuntuacion();
     if (player.spriteState == 0) lienzo.drawImage(jon, player.x, player.y);
     if (player.spriteState == 1) lienzo.drawImage(jonLeft, player.x, player.y);
     if (player.spriteState == 2) lienzo.drawImage(jonRight, player.x, player.y);
-    if (player.spriteState == 3) lienzo.drawImage(jonDragon, player.x, player.y);
+    if (player.spriteState == 3) lienzo.drawImage(jonDragon, player.x - 150, player.y - 62);
 
-
-    if (powerup.render) lienzo.drawImage(dragonSprite, powerup.x, powerup.y);
+    lienzo.drawImage(dragonSprite, powerup.x, powerup.y);
 }
 
 function pintaPlataformas() {
@@ -488,16 +501,27 @@ function putasColisionesMeComenLosPutosCojones2() {
 
         //Colisiones con los power ups
 
-        if (player.y_vel > 0 && powerup.x > player.x && (powerup.x + powerup.ancho) < (player.x + player.ancho) && (
-                powerup.y + powerup.alto > player.y) && (powerup.y + powerup.alto < player.y + player.alto)) {
+
+
+
+        if (player.y_vel > 0 && powerup.x > player.x && (powerup.x + powerup.ancho) < (player.x + player.ancho) &&
+            (powerup.y > player.y) && (powerup.y + powerup.alto < player.y + player.alto)
+        ) {
+
+
             player.y_vel = -20;
             gravity = 0.1;
+
+            dragonSprite.src = "pu2.png";
+
+
             player.spriteState = 3;
+            powerup.render = false;
             specialSprites = true;
             isPowerUp = true;
 
             score += 50;
-            setDificultad();
+            //setDificultad();
 
             //Intervalo para el PU
 
@@ -506,6 +530,8 @@ function putasColisionesMeComenLosPutosCojones2() {
                     return window.setInterval(function () {
                         gravity = 0.2;
                         //specialSprites = false;
+                        dragonSprite.src = "pu1.png";
+
                         window.clearInterval(id);
                     }, 800);
                 };
@@ -528,6 +554,7 @@ function putasColisionesMeComenLosPutosCojones2() {
 
 function gestionPowerUp() {
 
+
     if (plataformas[0].type == 0 || plataformas[0].type == 1) {
         powerup = {
             ancho: 25,
@@ -535,25 +562,25 @@ function gestionPowerUp() {
             render: true,
             type: 1,
 
-            x: plataformas[0].x + plataformas[2].ancho / 2 - 12,
-            y: plataformas[0].y - plataformas[2].alto,
+            x: plataformas[2].x + plataformas[2].ancho / 2 - 25 / 2,
+            y: plataformas[2].y - plataformas[2].alto,
         }
     } else {
         powerup = {
-            ancho: 5,
-            alto: 5,
-            render: true,
+            ancho: 25,
+            alto: 25,
+            render: false,
             type: 1,
 
-            x: -20,
-            y: -20,
+            x: -25,
+            y: -25,
         }
     }
 
 }
 
 function setDificultad() {
-    if (score >= 500) {
+    /*if (score >= 500) {
         background.src = "wallpp.png";
 
         vx -= 0.05;
@@ -594,12 +621,24 @@ function setDificultad() {
             }, 1000);
         };
         var id3 = intervalTrigger3();
-    }
+    }*/
+    function intervalTrigger() {
+        console.log("Despues");
+        return window.setInterval(function () {
+            background.src = "wall.png";
+            window.clearInterval(id);
+            console.log("Despues2");
+        }, 1000);
+    };
+    var id = intervalTrigger();
 }
 
 function gestionPuntuacion() {
-    document.getElementById("scoreText").innerHTML = Math.round(score);
-    lienzo.fillText(Math.round(score), 100, 100);
+    //document.getElementById("scoreText").innerHTML = Math.round(score);
+    
+    lienzo.font = "30px Arial";
+    lienzo.fillText(score, 10, 590);
+    //lienzo.fillText(Math.round(score), 100, 100);
 }
 
 //Controlador de las movidas de teclado
@@ -635,6 +674,8 @@ controller = {
 
 loop = function () {
 
+    var xFactor = 0.9;
+
 
     //Gestión de la velocidad y de los sprites:
 
@@ -653,13 +694,13 @@ loop = function () {
 
 
 
+
     //Gestión del movimiento del personaje:
     if (player.y >= (height / 2) - (player.alto / 2)) {
         player.y += player.y_vel;
         player.y_vel += gravity;
     } else {
         plataformas.forEach(function (p, i) {
-            //console.log(player.vy);
 
             if (player.y_vel < 0) {
                 p.y -= player.y_vel;
@@ -694,6 +735,8 @@ loop = function () {
 
 
 
+
+
     player.x += player.x_vel;
 
     player.x_vel *= 0.9; //Eje X
@@ -707,8 +750,6 @@ loop = function () {
     }
 
     if (player.y > 580) {
-        //console.log("OOOOOOOOOOOOOOOOOOOOOOO");
-
         gameStates.currentState = gameStates.gameOver();
         gameStates.currentState;
 
@@ -726,7 +767,6 @@ loop = function () {
 
     gestionPowerUp();
     putasColisionesMeComenLosPutosCojones2()
-    gestionPuntuacion();
     pintaPersonaje();
     enem.drawEnemy();
     pintaPlataformas();
@@ -760,6 +800,7 @@ if (window.DeviceOrientationEvent) {
 } else {
     console.log("DeviceOrientationEvent is not supported");
 }
+
 window.addEventListener("keydown", controller.keyListener)
 window.addEventListener("keyup", controller.keyListener);
 window.requestAnimationFrame(loop);
