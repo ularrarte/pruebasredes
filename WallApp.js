@@ -623,22 +623,17 @@ function setDificultad() {
         var id3 = intervalTrigger3();
     }*/
     function intervalTrigger() {
-        console.log("Despues");
         return window.setInterval(function () {
             background.src = "wall.png";
             window.clearInterval(id);
-            console.log("Despues2");
         }, 1000);
     };
     var id = intervalTrigger();
 }
 
-function gestionPuntuacion() {
-    //document.getElementById("scoreText").innerHTML = Math.round(score);
-    
+function gestionPuntuacion() {    
     lienzo.font = "30px Arial";
     lienzo.fillText(score, 10, 590);
-    //lienzo.fillText(Math.round(score), 100, 100);
 }
 
 //Controlador de las movidas de teclado
@@ -691,7 +686,6 @@ loop = function () {
         androidDerecha = false;
         androidIzquierda = false;
     }
-
 
 
 
