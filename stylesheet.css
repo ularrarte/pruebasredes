@@ -63,6 +63,17 @@ img {
     height: 125px; 
     z-index:-1;
 }
+#menu {
+    margin-top: 50px;
+    position:relative;
+    top: 0; 
+    left: 0; 
+    height: 900px;
+    width: 500px;
+    z-index:-1;
+}
+
+
 
 .bgimg {
     background-image: url('wall.png');

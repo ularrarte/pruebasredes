@@ -13,6 +13,8 @@ canvas1height = 400;
 var menu = document.getElementById("menu");
 var cmenu = menu.getContext("2d");
 
+
+
 var container = document.getElementById("container");
 container.style.display = "none";
 
@@ -20,15 +22,33 @@ container.style.display = "none";
 var mouseX;
 var mouseY;
 
+/*
+* LanguajeSelected = 0  -->Español
+*
+* LanguajeSelected = 1  -->Ingles
+* */
+
+var languajeSelected = 0;
 
 
 //Estados
+/*
+* Estado menu = 0;
+* Estado Jugando = 1;
+* Estado Scores = 2;
+* Estado Opciones = 3;
+* Estado Creditos = 4;
+*
+* */
+var curretStateId = 0;
+
 
 const gameStates = {
     currentState: undefined,
     startGame() {
         container.style.display = "initial";
         menu.style.display = "none"
+        curretStateId = 1;
     },
     game() {
         //El juego en si
@@ -38,18 +58,140 @@ const gameStates = {
     },
     menuSetup() {
         drawMenu();
+        curretStateId = 0;
         gameStates.currentState = gameStates.menu();
         gameStates.currentState;
     },
     gameOver() {
         container.style.display = "none";
         menu.style.display = "initial"
+        curretStateId = 0;
         gameStates.currentState = gameStates.menu();
         gameStates.currentState;
+    },
+    showScore(){
+        drawScores();
+        curretStateId = 2;
+    },
+    closeScore(){
+        drawMenu()
+        curretStateId = 0;
+    },
+    showOptions(){
+        drawOpciones()
+        curretStateId = 3;
+    },
+    closeOptions(){
+        drawMenu();
+        curretStateId = 0;
+
+    },
+    showCredits(){
+        drawCredits();
+        curretStateId = 4;
+    },
+    closeCredits(){
+        drawMenu();
+        curretStateId = 0;
     }
 };
 
 
+
+
+window.onload = function () {
+    //getMobileOperatingSystem();
+    gameStates.currentState = gameStates.menuSetup()
+    gameStates.currentState;
+};
+
+
+function drawMenu() {
+    var img = new Image();
+    if(languajeSelected === 1){
+        img.src = "Assets/Main_Menu_Eng.png"
+    }else if(languajeSelected === 0){
+        img.src = "Assets/Main_Menu_Esp.png"
+    }
+    img.onload = function () {
+        cmenu.drawImage(img, 0, 0, img.width, img.height, 0,0, menu.width, menu.height);
+    };
+}
+
+
+function drawScores() {
+    var img = new Image();
+    img.src = "Assets/AA_Menu_Ranking.png"
+    img.onload = function () {
+        cmenu.drawImage(img, 0, 0, img.width, img.height, 0,0, menu.width, menu.height);
+    };
+}
+
+function drawOpciones() {
+    var img = new Image();
+    img.src = "Assets/AA_Menu_Opciones.png"
+    img.onload = function () {
+        cmenu.drawImage(img, 0, 0, img.width, img.height, 0,0, menu.width, menu.height);
+    };
+}
+
+function drawCredits() {
+    var img = new Image();
+    img.src = "Assets/AA_Menu_Creditos.png"
+    img.onload = function () {
+        cmenu.drawImage(img, 0, 0, img.width, img.height, 0,0, menu.width, menu.height);
+    };
+}
+
+var botonJugar = new Button(110, 381, 371, 447);
+var botonScore = new Button(110, 381,475, 550);
+var botonOpciones = new Button(110, 381,575, 650);
+var botonCreditos = new Button(110, 381,675, 750);
+
+var botonIdioma = new Button(110,381,351,413 )
+var botonCerrar = new Button(381,500, 830, 886);
+
+
+
+function mouseCliked(e) {
+    mouseX = e.pageX - menu.offsetLeft;
+    mouseY = e.pageY - menu.offsetTop;
+    console.log(curretStateId);
+    if (botonJugar.checkClicked() && curretStateId === 0) {
+        gameStates.currentState = gameStates.startGame();
+        gameStates.currentState;
+    }
+    if(botonScore.checkClicked() && curretStateId === 0){
+        gameStates.currentState = gameStates.showScore();
+        gameStates.currentState;
+    }
+    if(botonOpciones.checkClicked() && curretStateId === 0){
+        gameStates.currentState = gameStates.showOptions();
+        gameStates.currentState;
+    }
+    if(botonCreditos.checkClicked() && curretStateId === 0){
+        gameStates.currentState = gameStates.showCredits();
+        gameStates.currentState;
+    }
+    if(botonCerrar.checkClicked()&& curretStateId >1){
+        gameStates.currentState = gameStates.menuSetup();
+        gameStates.currentState;
+    }
+    if(botonIdioma.checkClicked()&& curretStateId === 3){
+       languajeSelected = 1;
+       console.log("SE HA CAMBIADO IDIOMA")
+    }
+
+
+
+}
+
+function Button(xL, xR, yT, yB) {
+    this.xLeft = xL;
+    this.xRight = xR;
+    this.yTop = yT;
+    this.yBotton = yB;
+}
 
 
 
@@ -57,6 +199,7 @@ Button.prototype.checkClicked = function () {
     if (this.xLeft <= mouseX && mouseX <= this.xRight && this.yTop <= mouseY && mouseY <= this.yBotton)
         return true
 };
+
 
 var width = 500;
 var height = 600;
@@ -401,28 +544,6 @@ var enem = new enemy;
 
 
 
-window.onload = function () {
-    //getMobileOperatingSystem();
-    gameStates.currentState = gameStates.menuSetup()
-    gameStates.currentState;
-};
-
-function drawMenu() {
-    var img = new Image();
-    img.src = "MenuPrueba.jpg"
-    img.onload = function () {
-        cmenu.drawImage(img, 0, 0);
-    };
-}
-
-function mouseCliked(e) {
-    mouseX = e.pageX - menu.offsetLeft;
-    mouseY = e.pageY - menu.offsetTop;
-    if (boton1.checkClicked()) {
-        gameStates.currentState = gameStates.startGame()
-        gameStates.currentState;
-    }
-}
 
 
 function getMobileOperatingSystem() {
