@@ -26,11 +26,10 @@ img {
     margin-top: -200px;
     /* This is half the height */
 }
-
 @font-face {
-    font-family: 'gualapp';
-    src: url('font.ttf');
-  }
+    font-family: 'WallApp'; 
+    src: url('font.ttf'); 
+}
   
   
  
@@ -76,8 +75,8 @@ img {
     height: 900px;
     width: 500px;
     z-index:-1;
-    font-family: gualapp;
-    font-size: 30em;
+    font-family: WallApp;
+    font-size: 100%;
     
 }
 

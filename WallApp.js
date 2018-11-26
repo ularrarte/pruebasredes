@@ -165,10 +165,14 @@ function drawScores() {
     img.src = "Assets/AA_Menu_Ranking.png"
     img.onload = function () {
         cmenu.drawImage(img, 0, 0, img.width, img.height, 0, 0, menu.width, menu.height);
-        //lienzoScore.font = "30px Impact";
+        lienzoScore.font = '30px WallApp';        
 
         for (var i = 0; i < mejoresPuntuaciones.length; i++) {
-            if(i<10) lienzoScore.fillText(mejoresPuntuaciones[i].nombre + ": " + mejoresPuntuaciones[i].puntuacion, width/2 -100, i*45 + 416);
+            if (i == 0) lienzoScore.fillStyle = '#ffcc00'
+            else if (i == 1) lienzoScore.fillStyle = '#808080'
+            else if (i == 2) lienzoScore.fillStyle = '#994d00'
+            else lienzoScore.fillStyle = '#000000'
+            if(i<10) lienzoScore.fillText(mejoresPuntuaciones[i].nombre + ": " + mejoresPuntuaciones[i].puntuacion, width/2 - 150, i*45 + 416);
         }
     };
 
