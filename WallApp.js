@@ -3,6 +3,9 @@ var loop, controller;
 var bCanvas = document.getElementById("lienzo");
 var lienzo = bCanvas.getContext("2d");
 
+var menuCanvas = document.getElementById("menu");
+var lienzoScore = menuCanvas.getContext("2d");
+
 var tCanvas = document.getElementById("topCanvas");
 var ctx = tCanvas.getContext("2d");
 
@@ -63,34 +66,60 @@ const gameStates = {
         gameStates.currentState;
     },
     gameOver() {
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////// PUNTUACIONES //////////////////////////////////////////////////////
+
+
+
+        //localStorage.clear();
+
+
+        
+        mejoresPuntuaciones.push(new puntuacionNombre("Juan Pedro", score));
+
+        localStorage.setItem("arrayPuntuaciones", JSON.stringify(mejoresPuntuaciones));
+        mejoresPuntuaciones = JSON.parse(localStorage.getItem("arrayPuntuaciones"));
+
+        mejoresPuntuaciones.sort(sortNumber);
+        console.log(typeof mejoresPuntuaciones); //object
+        console.log(mejoresPuntuaciones); //[1, 2, 3]
+        
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
         container.style.display = "none";
         menu.style.display = "initial"
         curretStateId = 0;
         gameStates.currentState = gameStates.menu();
         gameStates.currentState;
     },
-    showScore(){
+    showScore() {
         drawScores();
         curretStateId = 2;
     },
-    closeScore(){
+    closeScore() {
         drawMenu()
         curretStateId = 0;
     },
-    showOptions(){
+    showOptions() {
         drawOpciones()
         curretStateId = 3;
     },
-    closeOptions(){
+    closeOptions() {
         drawMenu();
         curretStateId = 0;
 
     },
-    showCredits(){
+    showCredits() {
         drawCredits();
         curretStateId = 4;
     },
-    closeCredits(){
+    closeCredits() {
         drawMenu();
         curretStateId = 0;
     }
@@ -103,18 +132,30 @@ window.onload = function () {
     //getMobileOperatingSystem();
     gameStates.currentState = gameStates.menuSetup()
     gameStates.currentState;
+
+    localStorage.clear();
+    
+    if (localStorage.getItem("arrayPuntuaciones") != null) {
+        mejoresPuntuaciones = JSON.parse(localStorage.getItem("arrayPuntuaciones"));
+        console.log("No deberia aparecer");
+    }
+
+    mejoresPuntuaciones.sort(sortNumber);
+
+    console.log("El contenido del array es: " + mejoresPuntuaciones); //[1, 2, 3]
+
 };
 
 
 function drawMenu() {
     var img = new Image();
-    if(languajeSelected === 1){
+    if (languajeSelected === 1) {
         img.src = "Assets/Main_Menu_Eng.png"
-    }else if(languajeSelected === 0){
+    } else if (languajeSelected === 0) {
         img.src = "Assets/Main_Menu_Esp.png"
     }
     img.onload = function () {
-        cmenu.drawImage(img, 0, 0, img.width, img.height, 0,0, menu.width, menu.height);
+        cmenu.drawImage(img, 0, 0, img.width, img.height, 0, 0, menu.width, menu.height);
     };
 }
 
@@ -123,15 +164,27 @@ function drawScores() {
     var img = new Image();
     img.src = "Assets/AA_Menu_Ranking.png"
     img.onload = function () {
-        cmenu.drawImage(img, 0, 0, img.width, img.height, 0,0, menu.width, menu.height);
+        cmenu.drawImage(img, 0, 0, img.width, img.height, 0, 0, menu.width, menu.height);
+        //lienzoScore.font = "30px Impact";
+
+        for (var i = 0; i < mejoresPuntuaciones.length; i++) {
+            if(i<10) lienzoScore.fillText(mejoresPuntuaciones[i].nombre + ": " + mejoresPuntuaciones[i].puntuacion, width/2 -100, i*45 + 416);
+        }
     };
+
+
+
+    console.log("El primer elemento es :" + mejoresPuntuaciones[0]);
+
+
+
 }
 
 function drawOpciones() {
     var img = new Image();
     img.src = "Assets/AA_Menu_Opciones.png"
     img.onload = function () {
-        cmenu.drawImage(img, 0, 0, img.width, img.height, 0,0, menu.width, menu.height);
+        cmenu.drawImage(img, 0, 0, img.width, img.height, 0, 0, menu.width, menu.height);
     };
 }
 
@@ -139,17 +192,17 @@ function drawCredits() {
     var img = new Image();
     img.src = "Assets/AA_Menu_Creditos.png"
     img.onload = function () {
-        cmenu.drawImage(img, 0, 0, img.width, img.height, 0,0, menu.width, menu.height);
+        cmenu.drawImage(img, 0, 0, img.width, img.height, 0, 0, menu.width, menu.height);
     };
 }
 
 var botonJugar = new Button(110, 381, 371, 447);
-var botonScore = new Button(110, 381,475, 550);
-var botonOpciones = new Button(110, 381,575, 650);
-var botonCreditos = new Button(110, 381,675, 750);
+var botonScore = new Button(110, 381, 475, 550);
+var botonOpciones = new Button(110, 381, 575, 650);
+var botonCreditos = new Button(110, 381, 675, 750);
 
-var botonIdioma = new Button(110,381,351,413 )
-var botonCerrar = new Button(381,500, 830, 886);
+var botonIdioma = new Button(110, 381, 351, 413)
+var botonCerrar = new Button(381, 500, 830, 886);
 
 
 
@@ -161,25 +214,25 @@ function mouseCliked(e) {
         gameStates.currentState = gameStates.startGame();
         gameStates.currentState;
     }
-    if(botonScore.checkClicked() && curretStateId === 0){
+    if (botonScore.checkClicked() && curretStateId === 0) {
         gameStates.currentState = gameStates.showScore();
         gameStates.currentState;
     }
-    if(botonOpciones.checkClicked() && curretStateId === 0){
+    if (botonOpciones.checkClicked() && curretStateId === 0) {
         gameStates.currentState = gameStates.showOptions();
         gameStates.currentState;
     }
-    if(botonCreditos.checkClicked() && curretStateId === 0){
+    if (botonCreditos.checkClicked() && curretStateId === 0) {
         gameStates.currentState = gameStates.showCredits();
         gameStates.currentState;
     }
-    if(botonCerrar.checkClicked()&& curretStateId >1){
+    if (botonCerrar.checkClicked() && curretStateId > 1) {
         gameStates.currentState = gameStates.menuSetup();
         gameStates.currentState;
     }
-    if(botonIdioma.checkClicked()&& curretStateId === 3){
-       languajeSelected = 1;
-       console.log("SE HA CAMBIADO IDIOMA")
+    if (botonIdioma.checkClicked() && curretStateId === 3) {
+        languajeSelected = 1;
+        console.log("SE HA CAMBIADO IDIOMA")
     }
 
 
@@ -246,6 +299,22 @@ var androidIzquierda = false;
 
 var score = 0;
 
+/////////////////////////////////////////////////////// VARIABLE MEJORES PUNTUACIONES ////////////////
+
+
+function puntuacionNombre (nombre, puntuacion){
+    this.nombre = nombre;
+    this.puntuacion = puntuacion;
+}
+    
+var mejoresPuntuaciones = new Array();
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
 var newLevel = true;
 
 var boton1 = new Button(284, 500, 147, 207)
@@ -257,6 +326,9 @@ function Button(xL, xR, yT, yB) {
     this.yTop = yT;
     this.yBotton = yB;
 }
+
+
+
 
 
 var player = {
@@ -354,7 +426,7 @@ var Base = function () {
 
 var base = new Base();
 
-var Agujero = function () {}
+var Agujero = function () { }
 
 var jon = new Image();
 jon.src = 'Jon.png';
@@ -603,7 +675,7 @@ function putasColisionesMeComenLosPutosCojones2() {
     for (var i = 0; i < plataformas.length; i++) {
         var puta = plataformas[i];
         if (player.y_vel > 0 && (player.x + 15 < puta.x + puta.ancho) && (player.x + player.ancho -
-                15 > puta.x) &&
+            15 > puta.x) &&
             (player.y + player.alto > puta.y) && (player.y + player.alto < puta.y + puta.alto)) {
             if (!puta.saltado) player.y_vel = vy;
 
@@ -752,9 +824,11 @@ function setDificultad() {
     var id = intervalTrigger();
 }
 
-function gestionPuntuacion() {    
-    lienzo.font = "30px Arial";
+function gestionPuntuacion() {
+    lienzo.font = "30px Impact";
     lienzo.fillText(score, 10, 590);
+
+
 }
 
 //Controlador de las movidas de teclado
@@ -888,6 +962,13 @@ loop = function () {
     window.requestAnimationFrame(loop);
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////// MEJORES PUNTUACIONES JUANPE /////////////////////////////////////////////////
+function sortNumber(a, b) {
+    return b.puntuacion - a.puntuacion;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function orientation(event) {
     var string = "Magnetometer: " +

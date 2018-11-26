@@ -27,7 +27,13 @@ img {
     /* This is half the height */
 }
 
-
+@font-face {
+    font-family: 'gualapp';
+    src: url('font.ttf');
+  }
+  
+  
+ 
 .canvas { 
     top: 0; 
     left: 0; 
@@ -70,6 +76,9 @@ img {
     height: 900px;
     width: 500px;
     z-index:-1;
+    font-family: gualapp;
+    font-size: 30em;
+    
 }
 
 
