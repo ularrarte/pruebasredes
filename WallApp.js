@@ -25,6 +25,8 @@ container.style.display = "none";
 var mouseX;
 var mouseY;
 
+var username;
+
 /*
 * LanguajeSelected = 0  -->Español
 *
@@ -75,15 +77,14 @@ const gameStates = {
         //localStorage.clear();
 
 
-        
-        mejoresPuntuaciones.push(new puntuacionNombre("Juan Pedro", score));
+        console.log("eaaaaaaaaaaaa");
+        mejoresPuntuaciones.push(new puntuacionNombre(username, score));
 
         localStorage.setItem("arrayPuntuaciones", JSON.stringify(mejoresPuntuaciones));
-        mejoresPuntuaciones = JSON.parse(localStorage.getItem("arrayPuntuaciones"));
+        //mejoresPuntuaciones = JSON.parse(localStorage.getItem("arrayPuntuaciones"));
 
-        mejoresPuntuaciones.sort(sortNumber);
-        console.log(typeof mejoresPuntuaciones); //object
-        console.log(mejoresPuntuaciones); //[1, 2, 3]
+        //mejoresPuntuaciones.sort(sortNumber);
+        
         
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -130,19 +131,22 @@ const gameStates = {
 
 window.onload = function () {
     //getMobileOperatingSystem();
+
+    username = prompt("Please enter your name", "Hulio");
     gameStates.currentState = gameStates.menuSetup()
     gameStates.currentState;
 
     localStorage.clear();
     
     if (localStorage.getItem("arrayPuntuaciones") != null) {
+        window.alert("cantidubi");
         mejoresPuntuaciones = JSON.parse(localStorage.getItem("arrayPuntuaciones"));
         console.log("No deberia aparecer");
     }
 
     mejoresPuntuaciones.sort(sortNumber);
 
-    console.log("El contenido del array es: " + mejoresPuntuaciones); //[1, 2, 3]
+    //console.log("El contenido del array es: " + mejoresPuntuaciones.length); //[1, 2, 3]
 
 };
 
@@ -178,7 +182,6 @@ function drawScores() {
 
 
 
-    console.log("El primer elemento es :" + mejoresPuntuaciones[0]);
 
 
 
@@ -776,49 +779,18 @@ function gestionPowerUp() {
 
 }
 
+function reset() {
+    score = 0;
+
+    //Reseteamos la posición del jugador:
+    player.x = plataformas[plataformas.length - 1].x + 20;
+    player.y = plataformas[plataformas.length - 1].y - player.alto + 10;
+
+    window.requestAnimationFrame(loop);
+
+}
+
 function setDificultad() {
-    /*if (score >= 500) {
-        background.src = "wallpp.png";
-
-        vx -= 0.05;
-        vy += 1;
-
-        function intervalTrigger() {
-            return window.setInterval(function () {
-                background.src = "wall.png";
-                window.clearInterval(id);
-            }, 1000);
-        };
-        var id = intervalTrigger();
-    }
-    if (score >= 1000) {
-
-        vx -= 0.025;
-        vy += 1;
-
-        function intervalTrigger() {
-            background.src = "wallpp.png";
-            return window.setInterval(function () {
-                background.src = "wall.png";
-                window.clearInterval(id2);
-            }, 1000);
-        };
-        var id2 = intervalTrigger();
-    }
-    if (score >= 2000) {
-
-        vx -= 0.025;
-        vy += 1;
-
-
-        function intervalTrigger3() {
-            background.src = "wallpp.png";
-            return window.setInterval(function () {
-                background.src = "wall.png";
-            }, 1000);
-        };
-        var id3 = intervalTrigger3();
-    }*/
     function intervalTrigger() {
         return window.setInterval(function () {
             background.src = "wall.png";
@@ -868,7 +840,16 @@ controller = {
 
 loop = function () {
 
-    var xFactor = 0.9;
+    lienzo.clearRect(0, 0, bCanvas.width, bCanvas.height);
+    ctx.clearRect(0, 0, width, height);
+
+
+    gestionPowerUp();
+    putasColisionesMeComenLosPutosCojones2()
+    pintaPersonaje();
+    enem.drawEnemy();
+    pintaPlataformas();
+
 
 
     //Gestión de la velocidad y de los sprites:
@@ -885,7 +866,6 @@ loop = function () {
         androidDerecha = false;
         androidIzquierda = false;
     }
-
 
 
     //Gestión del movimiento del personaje:
@@ -943,27 +923,15 @@ loop = function () {
     }
 
     if (player.y > 580) {
+        window.cancelAnimationFrame(request);
+        
         gameStates.currentState = gameStates.gameOver();
         gameStates.currentState;
 
-        player.x = plataformas[plataformas.length - 1].x + 20;
-        player.y = plataformas[plataformas.length - 1].y - player.alto + 10;
+       
     }
-
-    //score++;
-
-
-
-    lienzo.clearRect(0, 0, bCanvas.width, bCanvas.height);
-    ctx.clearRect(0, 0, width, height);
-
-
-    gestionPowerUp();
-    putasColisionesMeComenLosPutosCojones2()
-    pintaPersonaje();
-    enem.drawEnemy();
-    pintaPlataformas();
-    window.requestAnimationFrame(loop);
+    
+    request = window.requestAnimationFrame(loop);
 }
 
 
@@ -1003,4 +971,4 @@ if (window.DeviceOrientationEvent) {
 
 window.addEventListener("keydown", controller.keyListener)
 window.addEventListener("keyup", controller.keyListener);
-window.requestAnimationFrame(loop);
+var request = window.requestAnimationFrame(loop);
