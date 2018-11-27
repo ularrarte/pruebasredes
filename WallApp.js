@@ -28,23 +28,23 @@ var mouseY;
 var username;
 
 /*
-* LanguajeSelected = 0  -->Español
-*
-* LanguajeSelected = 1  -->Ingles
-* */
+ * LanguajeSelected = 0  -->Español
+ *
+ * LanguajeSelected = 1  -->Ingles
+ * */
 
 var languajeSelected = 0;
 
 
 //Estados
 /*
-* Estado menu = 0;
-* Estado Jugando = 1;
-* Estado Scores = 2;
-* Estado Opciones = 3;
-* Estado Creditos = 4;
-*
-* */
+ * Estado menu = 0;
+ * Estado Jugando = 1;
+ * Estado Scores = 2;
+ * Estado Opciones = 3;
+ * Estado Creditos = 4;
+ *
+ * */
 var curretStateId = 0;
 
 
@@ -84,8 +84,8 @@ const gameStates = {
         //mejoresPuntuaciones = JSON.parse(localStorage.getItem("arrayPuntuaciones"));
 
         //mejoresPuntuaciones.sort(sortNumber);
-        
-        
+
+
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -137,7 +137,7 @@ window.onload = function () {
     gameStates.currentState;
 
     localStorage.clear();
-    
+
     if (localStorage.getItem("arrayPuntuaciones") != null) {
         window.alert("cantidubi");
         mejoresPuntuaciones = JSON.parse(localStorage.getItem("arrayPuntuaciones"));
@@ -169,14 +169,14 @@ function drawScores() {
     img.src = "Assets/AA_Menu_Ranking.png"
     img.onload = function () {
         cmenu.drawImage(img, 0, 0, img.width, img.height, 0, 0, menu.width, menu.height);
-        lienzoScore.font = '30px WallApp';        
+        lienzoScore.font = '30px WallApp';
 
         for (var i = 0; i < mejoresPuntuaciones.length; i++) {
             if (i == 0) lienzoScore.fillStyle = '#ffcc00'
             else if (i == 1) lienzoScore.fillStyle = '#808080'
             else if (i == 2) lienzoScore.fillStyle = '#994d00'
             else lienzoScore.fillStyle = '#000000'
-            if(i<10) lienzoScore.fillText(mejoresPuntuaciones[i].nombre + ": " + mejoresPuntuaciones[i].puntuacion, width/2 - 150, i*45 + 416);
+            if (i < 10) lienzoScore.fillText(mejoresPuntuaciones[i].nombre + ": " + mejoresPuntuaciones[i].puntuacion, width / 2 - 150, i * 45 + 416);
         }
     };
 
@@ -309,11 +309,11 @@ var score = 0;
 /////////////////////////////////////////////////////// VARIABLE MEJORES PUNTUACIONES ////////////////
 
 
-function puntuacionNombre (nombre, puntuacion){
+function puntuacionNombre(nombre, puntuacion) {
     this.nombre = nombre;
     this.puntuacion = puntuacion;
 }
-    
+
 var mejoresPuntuaciones = new Array();
 
 
@@ -365,6 +365,7 @@ var position = 0;
 
 
 var plataformas = [];
+var varAux = 0;
 
 
 
@@ -382,6 +383,7 @@ function Platform() {
     this.puntuado = false;
     this.saltado = false;
 
+
     position += (height / platformCount);
 
 
@@ -390,18 +392,24 @@ function Platform() {
         setDificultad();
     } else if (score > 1500) {
         this.probabilidad = [0, 0, 1, 1, 2, 2];
-        setDificultad();
-    } else if (score > 500) {
+        if (varAux == 2) {
+            setDificultad();
+            varAux++;
+        }
+    } else if (score > 200) {
         this.probabilidad = [0, 0, 0, 1, 2, 2];
         setDificultad();
+        if (varAux == 1) {
+            setDificultad();
+            varAux++;
+        }
     } else if (score > 100) {
 
         this.probabilidad = [0, 0, 0, 1, 2];
-        if (newLevel) {
-            background.src = "wallpp.png";
+        if (varAux == 0) {
             setDificultad();
+            varAux++;
         }
-        newLevel = false;
     } else {
         this.probabilidad = [0];
     }
@@ -433,7 +441,7 @@ var Base = function () {
 
 var base = new Base();
 
-var Agujero = function () { }
+var Agujero = function () {}
 
 var jon = new Image();
 jon.src = 'Jon.png';
@@ -683,7 +691,7 @@ function gestionColisiones() {
     for (var i = 0; i < plataformas.length; i++) {
         var auxPlat = plataformas[i];
         if (player.y_vel > 0 && (player.x + 15 < auxPlat.x + auxPlat.ancho) && (player.x + player.ancho -
-            15 > auxPlat.x) &&
+                15 > auxPlat.x) &&
             (player.y + player.alto > auxPlat.y) && (player.y + player.alto < auxPlat.y + auxPlat.alto)) {
             if (!auxPlat.saltado) player.y_vel = vy;
 
@@ -792,6 +800,8 @@ function reset() {
 }
 
 function setDificultad() {
+    background.src = "wallpp.png";
+
     function intervalTrigger() {
         return window.setInterval(function () {
             background.src = "wall.png";
@@ -925,13 +935,13 @@ loop = function () {
 
     if (player.y > 580) {
         window.cancelAnimationFrame(request);
-        
+
         gameStates.currentState = gameStates.gameOver();
         gameStates.currentState;
 
-       
+
     }
-    
+
     request = window.requestAnimationFrame(loop);
 }
 
