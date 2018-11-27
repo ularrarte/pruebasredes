@@ -612,6 +612,7 @@ function arrow(positionX, positionY, vY) {
         if (player.x < this.posX && (player.x + player.ancho) > (this.posX + this.projectileWidth) &&
             (this.posYbelow + this.projectileHeight > player.y) && (this.posYbelow + this.projectileHeight) < (player.y + player.alto + 10)) {
             this.existence = false;
+            player.y = 0;
             gameStates.currentState = gameStates.gameOver();
             gameStates.currentState;
         }
@@ -678,19 +679,19 @@ function pintaPlataformas() {
 
 
 
-function putasColisionesMeComenLosPutosCojones2() {
+function gestionColisiones() {
     for (var i = 0; i < plataformas.length; i++) {
-        var puta = plataformas[i];
-        if (player.y_vel > 0 && (player.x + 15 < puta.x + puta.ancho) && (player.x + player.ancho -
-            15 > puta.x) &&
-            (player.y + player.alto > puta.y) && (player.y + player.alto < puta.y + puta.alto)) {
-            if (!puta.saltado) player.y_vel = vy;
+        var auxPlat = plataformas[i];
+        if (player.y_vel > 0 && (player.x + 15 < auxPlat.x + auxPlat.ancho) && (player.x + player.ancho -
+            15 > auxPlat.x) &&
+            (player.y + player.alto > auxPlat.y) && (player.y + player.alto < auxPlat.y + auxPlat.alto)) {
+            if (!auxPlat.saltado) player.y_vel = vy;
 
-            if (puta.type == 2) {
+            if (auxPlat.type == 2) {
                 plataformas[i].saltado = true;
             }
 
-            if (!puta.puntuado) {
+            if (!auxPlat.puntuado) {
                 score += 10;
                 plataformas[i].puntuado = true;
             }
@@ -845,7 +846,7 @@ loop = function () {
 
 
     gestionPowerUp();
-    putasColisionesMeComenLosPutosCojones2()
+    gestionColisiones();
     pintaPersonaje();
     enem.drawEnemy();
     pintaPlataformas();
